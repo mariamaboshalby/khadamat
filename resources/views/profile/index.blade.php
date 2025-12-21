@@ -257,7 +257,7 @@
                 <i class="fas fa-chevron-left menu-arrow"></i>
             </a>
             
-            <a href="{{ route('profile.edit') }}" class="menu-list-item">
+            <a href="{{ route('notifications.index') }}" class="menu-list-item">
                 <div class="menu-icon" style="background: #fff3e0; color: #ff9800;">
                     <i class="fas fa-bell"></i>
                 </div>

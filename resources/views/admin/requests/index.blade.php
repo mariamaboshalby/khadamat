@@ -112,8 +112,8 @@
 
                                         <!-- View Button -->
                                         <a href="{{ route('admin.requests.show', $request->id) }}"
-                                            class="btn-primary rounded-3 btn-sm">
-                                            عرض التفاصيل
+                                            class="btn-primary  rounded-3 btn-sm">
+                                           عرض
                                         </a>
 
                                         <!-- Invoice Button -->
