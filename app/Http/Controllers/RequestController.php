@@ -36,7 +36,7 @@ class RequestController extends Controller
             'address' => 'required|string|max:255',
             'scheduled_at' => 'nullable|date|after:now',
             'description' => 'nullable|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
 
         // Create request

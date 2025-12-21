@@ -7,6 +7,7 @@ use App\Models\Request as RequestModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\TechnicianNewRequestAvailable;
+use App\Notifications\NewOfferOnRequest;
 use App\Models\Technician;
 use App\Models\User;
 
@@ -177,6 +178,9 @@ class RequestController extends Controller
         $requestData->update([
             'status' => 'pricing_pending',
         ]);
+
+        // Notify the request owner about the new proposal
+        $requestData->user->notify(new NewOfferOnRequest($requestData, $proposal));
         
         return redirect()->route('technician.repair-requests.index')
             ->with('success', 'تم إرسال عرض السعر بنجاح');

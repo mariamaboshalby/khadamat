@@ -31,7 +31,7 @@
                 </div>
                 <h5 class="fw-bold text-muted">لا توجد إشعارات</h5>
                 <p class="text-muted small">ليس لديك أي إشعارات جديدة في الوقت الحالي.</p>
-                <a href="{{ route('home') }}" class="btn btn-primary rounded-pill px-4 mt-2">العودة للرئيسية</a>
+                <a href="{{ route('home') }}" class="btn-primary rounded-pill px-4 mt-2">العودة للرئيسية</a>
             </div>
         @else
             <div class="notifications-list pb-5">
