@@ -10,6 +10,7 @@ use App\Models\Strategy;
 use App\Models\Request as RequestModel;
 use App\Models\Technician;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\EncryptionHelper;
 
 class HomeController extends Controller
 {
@@ -58,8 +59,9 @@ class HomeController extends Controller
         return view('dashboard', compact('requests'));
     }
 
-    public function technicianProfile($id)
+    public function technicianProfile($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $technician =Technician::with(['user', 'specialization', 'reviews.user'])->findOrFail($id);
         
         $completedRequests = RequestModel::where('assigned_technician_id', $id)
@@ -71,14 +73,16 @@ class HomeController extends Controller
         return view('technician-profile', compact('technician', 'completedRequests', 'avgRating'));
     }
 
-    public function serviceShow($id)
+    public function serviceShow($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $service = Service::with('specialization')->findOrFail($id);
         return view('services.show', compact('service'));
     }
 
-    public function submitTechnicianReview(Request $request, $id)
+    public function submitTechnicianReview(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         // Validate the request
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',

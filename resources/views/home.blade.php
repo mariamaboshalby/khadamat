@@ -104,7 +104,7 @@
         <div class="services-grid row g-3 g-md-4 mb-5 px-2">
             @foreach ($services as $service)
                 <div class="col-4 col-sm-4 col-md-3 col-lg-2">
-                    <a href="{{ route('service.show', $service->id) }}" class="service-card-modern h-100">
+                    <a href="{{ route('service.show', \App\Helpers\EncryptionHelper::encryptId($service->id)) }}" class="service-card-modern h-100 ">
                         <div class="icon-wrapper {{ $service->color_class }}">
                             <i class="fas {{ $service->icon }}"></i>
                         </div>
@@ -191,7 +191,6 @@
                                 @endif
                             @endauth
                             <div class="d-flex align-items-center mb-3">
-                                <img src="{{ $review->user_image }}" alt="{{ $review->user_name }}" class="review-avatar">
                                 <div class="ms-3">
                                     <div class="review-name">{{ $review->user_name }}</div>
                                     <div class="review-rating">
@@ -529,11 +528,6 @@
             color: white;
             z-index: 0;
             transform: rotate(10deg);
-        }
-
-        /* Service Cards */
-        .services-grid {
-            /* Bootstrap handles grid */
         }
 
         .service-card-modern {

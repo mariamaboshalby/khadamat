@@ -30,7 +30,7 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
-            <form method="POST" action="{{ route('admin.warehouse-items.update', $warehouseItem) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.warehouse-items.update', $encryptedId) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

@@ -46,7 +46,7 @@
     </div>
 
     <!-- Pricing Form -->
-    <form action="{{ route('technician.repair-requests.submit-pricing', $request->id) }}" method="POST">
+    <form action="{{ route('technician.repair-requests.submit-pricing', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST">
         @csrf
         
         <!-- Service Price Card -->

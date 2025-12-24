@@ -28,7 +28,7 @@
 
     <!-- Request Form Card -->
     <div class="form-card">
-        <form action="{{ route('requests.update', $requestData->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('requests.update', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -137,7 +137,7 @@
                 <button type="submit" class="btn btn-warning btn-modern">
                     <i class="fas fa-save me-2"></i> حفظ التعديلات
                 </button>
-                <a href="{{ route('requests.show', $requestData->id) }}" class="btn btn-outline-secondary btn-modern">
+                <a href="{{ route('requests.show', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}" class="btn btn-outline-secondary btn-modern">
                     <i class="fas fa-times me-2"></i> إلغاء
                 </a>
             </div>

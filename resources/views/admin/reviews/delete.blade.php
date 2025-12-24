@@ -54,7 +54,7 @@
                             <i class="fas fa-arrow-left me-2"></i>إلغاء
                         </a>
                         
-                        <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST">
+                        <form action="{{ route('admin.reviews.destroy', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">

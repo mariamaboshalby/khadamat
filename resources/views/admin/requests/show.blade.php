@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 
-@section('title', "تفاصيل الطلب #{$requestModel->id}")
+@section('title', "تفاصيل الطلب #")
 @section('header_title', 'تفاصيل الطلب')
 
 @section('content')
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold text-dark mb-1">تفاصيل الطلب #{{ $requestModel->id }}</h4>
+
             <p class="text-muted mb-0">عرض كامل تفاصيل الطلب</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.requests.invoice', $requestModel->id) }}" class="btn btn-success rounded-pill px-4" target="_blank">
+            <a href="{{ route('admin.requests.invoice', \App\Helpers\EncryptionHelper::encryptId($requestModel->id)) }}" class="btn btn-success rounded-pill px-4" target="_blank">
                 <i class="fa-solid fa-file-invoice me-2"></i> عرض الفاتورة
             </a>
             <a href="{{ route('admin.requests.index') }}" class="btn btn-outline-secondary rounded-pill px-4">

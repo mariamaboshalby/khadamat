@@ -116,7 +116,7 @@
 
                         <div class="mt-3 pt-3 border-top border-light d-flex justify-content-end gap-2">
                             @if ($request->status === 'pending')
-                                <form action="{{ route('requests.destroy', $request->id) }}" method="POST"
+                                <form action="{{ route('requests.destroy', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST"
                                     onsubmit="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟');" class="d-inline">
                                     @csrf
                                     @method('DELETE')
@@ -125,7 +125,7 @@
                                     </button>
                                 </form>
                             @endif
-                            <a href="{{ route('requests.show', $request->id) }}"
+                            <a href="{{ route('requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                 class="btn-sm btn-outline-primary  rounded-pill ">
                                 التفاصيل <i class="fas fa-arrow-left ms-1"></i>
                             </a>

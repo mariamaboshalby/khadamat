@@ -111,13 +111,13 @@
                                     <td class="text-center">
 
                                         <!-- View Button -->
-                                        <a href="{{ route('admin.requests.show', $request->id) }}"
+                                        <a href="{{ route('admin.requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                             class="btn-primary  rounded-3 btn-sm">
                                            عرض
                                         </a>
 
                                         <!-- Invoice Button -->
-                                        <a href="{{ route('admin.requests.invoice', $request->id) }}"
+                                        <a href="{{ route('admin.requests.invoice', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                             class="btn btn-success btn-sm" target="_blank" title="عرض الفاتورة">
                                             <i class="fa-solid fa-file-invoice"></i>
                                         </a>
@@ -134,7 +134,7 @@
                                                 @if ($request->status == 'pending')
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.requests.update-status', $request->id) }}"
+                                                            action="{{ route('admin.requests.update-status', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                                             method="POST">
                                                             @csrf @method('PATCH')
                                                             <input type="hidden" name="status" value="approved">
@@ -144,7 +144,7 @@
 
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.requests.update-status', $request->id) }}"
+                                                            action="{{ route('admin.requests.update-status', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                                             method="POST">
                                                             @csrf @method('PATCH')
                                                             <input type="hidden" name="status" value="rejected">
@@ -156,7 +156,7 @@
                                                 @if ($request->status == 'approved')
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.requests.update-status', $request->id) }}"
+                                                            action="{{ route('admin.requests.update-status', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                                             method="POST">
                                                             @csrf @method('PATCH')
                                                             <input type="hidden" name="status" value="in_progress">
@@ -168,7 +168,7 @@
                                                 @if ($request->status == 'in_progress')
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.requests.update-status', $request->id) }}"
+                                                            action="{{ route('admin.requests.update-status', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}"
                                                             method="POST">
                                                             @csrf @method('PATCH')
                                                             <input type="hidden" name="status" value="completed">

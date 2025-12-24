@@ -60,7 +60,7 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px;">
-                                <a href="{{ route('admin.warehouse-items.edit', $item) }}" class="btn btn-success btn-sm" title="تحديث الكمية">
+                                <a href="{{ route('admin.warehouse-items.edit', \App\Helpers\EncryptionHelper::encryptId($item->id)) }}" class="btn btn-success btn-sm" title="تحديث الكمية">
                                     <i class="fa-solid fa-pen-to-square"></i> تحديث
                                 </a>
                             </div>

@@ -76,7 +76,7 @@
     </div>
 
     <div class="action-section">
-        <form action="{{ route('requests.accept-price', $request->id) }}" method="POST" class="mb-3">
+        <form action="{{ route('requests.accept-price', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST" class="mb-3">
             @csrf
             <button type="submit" class="btn btn-success w-100 btn-lg">
                 <i class="fas fa-check-circle me-2"></i>قبول العرض
@@ -98,7 +98,7 @@
                 <h5 class="modal-title">رفض العرض</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('requests.reject-price', $request->id) }}" method="POST">
+            <form action="{{ route('requests.reject-price', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="alert alert-warning">

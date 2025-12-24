@@ -111,7 +111,7 @@
         </a>
         
         @if($request->status === 'approved' && !$request->assigned_technician_id)
-        <a href="{{ route('technician.repair-requests.pricing', $request->id) }}" class="btn btn-primary">
+        <a href="{{ route('technician.repair-requests.pricing', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" class="btn btn-primary">
             <i class="fas fa-money-bill-wave me-2"></i>عرض سعر
         </a>
         @endif
@@ -124,13 +124,13 @@
             <p class="mb-2"><strong>ملاحظات العميل:</strong> {{ $request->customer_notes }}</p>
             @endif
             <div class="d-flex gap-2">
-                <form action="{{ route('technician.repair-requests.accept-negotiation', $request->id) }}" method="POST">
+                <form action="{{ route('technician.repair-requests.accept-negotiation', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success btn-sm">
                         <i class="fas fa-check me-1"></i> قبول
                     </button>
                 </form>
-                <form action="{{ route('technician.repair-requests.reject-negotiation', $request->id) }}" method="POST" onsubmit="return confirm('هل تريد رفض السعر وإلغاء الطلب؟')">
+                <form action="{{ route('technician.repair-requests.reject-negotiation', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" method="POST" onsubmit="return confirm('هل تريد رفض السعر وإلغاء الطلب؟')">
                     @csrf
                     <button type="submit" class="btn btn-danger btn-sm">
                         <i class="fas fa-times me-1"></i> رفض

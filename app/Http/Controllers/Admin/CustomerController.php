@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\EncryptionHelper;
 
 class CustomerController extends AdminController
 {
@@ -68,8 +69,11 @@ class CustomerController extends AdminController
     /**
      * Display the specified customer.
      */
-    public function show(User $customer)
+    public function show($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $customer = User::findOrFail($id);
+        
         // Ensure we're viewing a customer
         if ($customer->user_type !== 'customer') {
             abort(404);
@@ -81,8 +85,11 @@ class CustomerController extends AdminController
     /**
      * Show the form for editing the specified customer.
      */
-    public function edit(User $customer)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $customer = User::findOrFail($id);
+        
         if ($customer->user_type !== 'customer') {
             abort(404);
         }
@@ -93,8 +100,11 @@ class CustomerController extends AdminController
     /**
      * Update the specified customer in storage.
      */
-    public function update(Request $request, User $customer)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $customer = User::findOrFail($id);
+        
         if ($customer->user_type !== 'customer') {
             abort(404);
         }
@@ -115,8 +125,11 @@ class CustomerController extends AdminController
     /**
      * Remove the specified customer from storage.
      */
-    public function destroy(User $customer)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $customer = User::findOrFail($id);
+        
         if ($customer->user_type !== 'customer') {
             abort(404);
         }

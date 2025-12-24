@@ -17,7 +17,7 @@
             <h6 class="m-0 font-weight-bold text-primary">نموذج تعديل المراجعة</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.reviews.update', $review) }}" method="POST">
+            <form action="{{ route('admin.reviews.update', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" method="POST">
                 @csrf
                 @method('PUT')
                 

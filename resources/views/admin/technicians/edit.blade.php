@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('admin.techs.update', $technician) }}" style="padding: 32px;">
+        <form method="POST" action="{{ route('admin.techs.update', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" style="padding: 32px;">
             @csrf
             @method('PUT')
 
@@ -343,7 +343,7 @@
             </div>
 
             <div style="padding-top: 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;">
-                <a href="{{ route('admin.techs.show', $technician) }}" class="btn btn-outline-secondary">
+                <a href="{{ route('admin.techs.show', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" class="btn btn-outline-secondary">
                     إلغاء
                 </a>
                 <button type="submit" class="btn-primary rounded-3">

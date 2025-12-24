@@ -102,7 +102,7 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('admin.warehouse-items.edit', $item) }}"
+                                            <a href="{{ route('admin.warehouse-items.edit', \App\Helpers\EncryptionHelper::encryptId($item->id)) }}"
                                                 class="btn btn-sm btn-warning text-white" title="تعديل"
                                                 style="transition: all 0.2s;"
                                                 onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(255, 193, 7, 0.3)';"
@@ -110,7 +110,7 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <form method="POST"
-                                                action="{{ route('admin.warehouse-items.destroy', $item) }}"
+                                                action="{{ route('admin.warehouse-items.destroy', \App\Helpers\EncryptionHelper::encryptId($item->id)) }}"
                                                 onsubmit="return confirm('هل أنت متأكد من حذف هذا الصنف؟')"
                                                 class="d-inline">
                                                 @csrf
