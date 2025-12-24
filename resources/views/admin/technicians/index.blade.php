@@ -121,7 +121,7 @@
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.techs.show', $technician) }}" 
+                                        <a href="{{ route('admin.techs.show', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" 
                                            class="btn btn-sm btn-info text-white" 
                                            title="عرض"
                                            style="transition: all 0.2s;"
@@ -129,7 +129,7 @@
                                            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.techs.edit', $technician) }}" 
+                                        <a href="{{ route('admin.techs.edit', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" 
                                            class="btn btn-sm btn-warning text-white" 
                                            title="تعديل"
                                            style="transition: all 0.2s;"
@@ -138,7 +138,7 @@
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <form method="POST" 
-                                              action="{{ route('admin.techs.destroy', $technician) }}" 
+                                              action="{{ route('admin.techs.destroy', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" 
                                               onsubmit="return confirm('هل أنت متأكد من حذف هذا الفني؟')"
                                               class="d-inline">
                                             @csrf

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Service;
 use App\Models\Specialization;
 use Illuminate\Http\Request;
+use App\Helpers\EncryptionHelper;
 
 class ServiceController extends AdminController
 {
@@ -53,17 +54,22 @@ class ServiceController extends AdminController
     /**
      * Show the form for editing the specified service.
      */
-    public function edit(Service $service)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $service = Service::findOrFail($id);
+        
         $specializations = Specialization::active()->get();
-        return view('admin.services.edit', compact('service', 'specializations'));
+        return view('admin.services.edit', compact('service', 'specializations', 'encryptedId'));
     }
 
     /**
      * Update the specified service in storage.
      */
-    public function update(Request $request, Service $service)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $service = Service::findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:50',
@@ -86,8 +92,11 @@ class ServiceController extends AdminController
     /**
      * Remove the specified service from storage.
      */
-    public function destroy(Service $service)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $service = Service::findOrFail($id);
+        
         $service->delete();
 
         return redirect()->route('admin.services.index')

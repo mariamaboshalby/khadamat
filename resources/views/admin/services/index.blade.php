@@ -48,10 +48,10 @@
                             <td>{{ $service->route_name ?? 'غير محدد' }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
+                                    <a href="{{ route('admin.services.edit', \App\Helpers\EncryptionHelper::encryptId($service->id)) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه الخدمة؟')">
+                                    <form action="{{ route('admin.services.destroy', \App\Helpers\EncryptionHelper::encryptId($service->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه الخدمة؟')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" title="حذف">

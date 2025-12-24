@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">عرض المراجعة #{{ $review->id }}</h1>
         <div>
-            <a href="{{ route('admin.reviews.edit', $review) }}" class="btn btn-warning text-white">
+            <a href="{{ route('admin.reviews.edit', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" class="btn btn-warning text-white">
                 <i class="fas fa-edit me-2"></i>تعديل
             </a>
             <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">
@@ -115,11 +115,11 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.reviews.edit', $review) }}" class="btn btn-warning text-white mb-2">
+                        <a href="{{ route('admin.reviews.edit', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" class="btn btn-warning text-white mb-2">
                             <i class="fas fa-edit me-2"></i>تعديل المراجعة
                         </a>
                         
-                        <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذه المراجعة؟ هذا الإجراء لا يمكن التراجع عنه.')">
+                        <form action="{{ route('admin.reviews.destroy', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذه المراجعة؟ هذا الإجراء لا يمكن التراجع عنه.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger w-100">

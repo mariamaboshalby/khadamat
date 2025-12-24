@@ -88,7 +88,7 @@
                     <button onclick="window.print()" class="btn btn-success w-50 fw-bold">
                         <i class="fas fa-print me-1"></i> طباعة
                     </button>
-                    <a href="{{ route('requests.show', $request->id) }}" class="btn btn-outline-secondary w-50 fw-bold">
+                    <a href="{{ route('requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" class="btn btn-outline-secondary w-50 fw-bold">
                         رجوع
                     </a>
                 </div>

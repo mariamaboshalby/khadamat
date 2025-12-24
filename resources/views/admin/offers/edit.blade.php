@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('admin.offers.update', $offer) }}" style="padding: 32px;">
+        <form method="POST" action="{{ route('admin.offers.update', $encryptedId) }}" style="padding: 32px;">
             @csrf
             @method('PUT')
             

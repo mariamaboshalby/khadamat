@@ -48,10 +48,10 @@
                             <td>{{ $offer->created_at->format('Y-m-d H:i') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.offers.edit', $offer) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
+                                    <a href="{{ route('admin.offers.edit', \App\Helpers\EncryptionHelper::encryptId($offer->id)) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.offers.destroy', $offer) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا العرض؟')">
+                                    <form action="{{ route('admin.offers.destroy', \App\Helpers\EncryptionHelper::encryptId($offer->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا العرض؟')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" title="حذف">

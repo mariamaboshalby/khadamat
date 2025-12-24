@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\AdminNewTechnicianSelected;
+use App\Helpers\EncryptionHelper;
 
 class TechnicianController extends AdminController
 {
@@ -131,8 +132,11 @@ class TechnicianController extends AdminController
     /**
      * Display the specified technician.
      */
-    public function show(Technician $technician)
+    public function show($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $technician = Technician::findOrFail($id);
+        
         $technician->load(['user', 'specialization', 'badges']);
         
         // Check if user exists
@@ -147,8 +151,9 @@ class TechnicianController extends AdminController
     /**
      * Show the form for editing the specified technician.
      */
-    public function edit($id)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $technician = Technician::with(['user'])->findOrFail($id);
         
         // Check if user exists
@@ -167,8 +172,9 @@ class TechnicianController extends AdminController
     /**
      * Update the specified technician in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $technician = Technician::with(['user'])->findOrFail($id);
         
         // Load the user relationship and check if user exists
@@ -238,8 +244,9 @@ class TechnicianController extends AdminController
     /**
      * Remove the specified technician from storage.
      */
-    public function destroy($id)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $technician = Technician::with(['user'])->findOrFail($id);
         
         // Load the user relationship and check if user exists

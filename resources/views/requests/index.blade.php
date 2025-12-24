@@ -80,12 +80,12 @@ use Illuminate\Support\Str;
                         @endif
                         
                         <div class="flex justify-between">
-                            <a href="{{ route('requests.show', $request->id) }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                            <a href="{{ route('requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" class="text-blue-600 hover:text-blue-800 font-medium">
                                 عرض التفاصيل
                             </a>
                             
                             @if($request->status === 'pending')
-                                <a href="{{ route('requests.edit', $request->id) }}" class="text-gray-600 hover:text-gray-800 font-medium">
+                                <a href="{{ route('requests.edit', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" class="text-gray-600 hover:text-gray-800 font-medium">
                                     تعديل
                                 </a>
                             @endif

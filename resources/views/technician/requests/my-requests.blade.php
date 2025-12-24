@@ -90,14 +90,14 @@
                     
                     <div class="request-actions">
                         @if($request->status === 'in_progress' && $request->assigned_technician_id === $technician->id)
-                            <form method="POST" action="{{ route('technician.repair-requests.complete', $request->id) }}" class="mb-2">
+                            <form method="POST" action="{{ route('technician.repair-requests.complete', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" class="mb-2">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm w-100">
                                     <i class="fas fa-check-circle me-1"></i>تم الإنجاز
                                 </button>
                             </form>
                         @endif
-                        <a href="{{ route('technician.repair-requests.show', $request->id) }}" 
+                        <a href="{{ route('technician.repair-requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" 
                            class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-eye me-1"></i>التفاصيل
                         </a>

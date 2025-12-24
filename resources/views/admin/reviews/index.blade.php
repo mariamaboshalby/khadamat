@@ -11,9 +11,7 @@
             <a href="{{ route('admin.reviews.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus-circle me-2"></i>إضافة مراجعة جديدة
             </a>
-            <a href="{{ route('admin.reviews.export') }}" class="btn btn-success">
-                <i class="fas fa-download me-2"></i>تصدير البيانات
-            </a>
+          
         </div>
     </div>
 
@@ -68,13 +66,13 @@
                             <td>{{ $review->created_at->format('Y-m-d H:i') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.reviews.show', $review) }}" class="btn btn-info btn-sm" title="عرض">
+                                    <a href="{{ route('admin.reviews.show', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" class="btn btn-info btn-sm" title="عرض">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.reviews.edit', $review) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
+                                    <a href="{{ route('admin.reviews.edit', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" class="btn btn-warning btn-sm text-white" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه المراجعة؟')">
+                                    <form action="{{ route('admin.reviews.destroy', \App\Helpers\EncryptionHelper::encryptId($review->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه المراجعة؟')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" title="حذف">

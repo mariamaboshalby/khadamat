@@ -137,7 +137,7 @@
 
                                     <td style="padding: 16px 20px;">
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('admin.customers.show', $customer) }}"
+                                            <a href="{{ route('admin.customers.show', \App\Helpers\EncryptionHelper::encryptId($customer->id)) }}"
                                                 class="btn btn-sm btn-info text-white" title="عرض"
                                                 style="transition: all 0.2s;"
                                                 onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(13, 110, 253, 0.3)';"
@@ -145,7 +145,7 @@
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
 
-                                            <a href="{{ route('admin.customers.edit', $customer) }}"
+                                            <a href="{{ route('admin.customers.edit', \App\Helpers\EncryptionHelper::encryptId($customer->id)) }}"
                                                 class="btn btn-sm btn-warning text-white" title="تعديل"
                                                 style="transition: all 0.2s;"
                                                 onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(255, 193, 7, 0.3)';"
@@ -153,7 +153,7 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
 
-                                            <form method="POST" action="{{ route('admin.customers.destroy', $customer) }}"
+                                            <form method="POST" action="{{ route('admin.customers.destroy', \App\Helpers\EncryptionHelper::encryptId($customer->id)) }}"
                                                 onsubmit="return confirm('⚠️ هل أنت متأكد من حذف هذا العميل؟')"
                                                 class="d-inline">
                                                 @csrf

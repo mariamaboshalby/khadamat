@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Specialization;
 use Illuminate\Http\Request;
+use App\Helpers\EncryptionHelper;
 
 class SpecializationController extends AdminController
 {
@@ -45,16 +46,21 @@ class SpecializationController extends AdminController
     /**
      * Show the form for editing the specified specialization.
      */
-    public function edit(Specialization $specialization)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $specialization = Specialization::findOrFail($id);
+        
         return view('admin.specializations.edit', compact('specialization'));
     }
 
     /**
      * Update the specified specialization in storage.
      */
-    public function update(Request $request, Specialization $specialization)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $specialization = Specialization::findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:specializations,name,' . $specialization->id,
             'description' => 'nullable|string',
@@ -70,8 +76,11 @@ class SpecializationController extends AdminController
     /**
      * Remove the specified specialization from storage.
      */
-    public function destroy(Specialization $specialization)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $specialization = Specialization::findOrFail($id);
+        
         // Check if specialization has technicians
         if ($specialization->technicians()->count() > 0) {
             return back()->with('error', 'لا يمكن حذف التخصص لأنه مرتبط بفنيين');

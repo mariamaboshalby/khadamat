@@ -13,6 +13,7 @@ use App\Notifications\TechnicianProposalAccepted;
 use App\Notifications\AdminLowStockAlert;
 use App\Notifications\TechnicianNewRequestAvailable;
 use App\Models\User;
+use App\Helpers\EncryptionHelper;
 
 class RequestController extends Controller
 {
@@ -84,8 +85,9 @@ class RequestController extends Controller
     /**
      * Display a specific request.
      */
-    public function show($id)
+    public function show($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $requestData = RequestModel::with(['service', 'user', 'media', 'requestItems.warehouseItem', 'proposals.technician.user', 'proposals.items.warehouseItem'])->findOrFail($id);
 
         // Only the owner can view
@@ -112,8 +114,9 @@ class RequestController extends Controller
     /**
      * Delete a user's request (only if pending).
      */
-    public function destroy($id)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {
@@ -134,8 +137,9 @@ class RequestController extends Controller
     /**
      * Show the form for editing a request.
      */
-    public function edit($id)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $requestData = RequestModel::with(['service', 'media'])->findOrFail($id);
 
         if ($requestData->user_id !== Auth::id()) {
@@ -153,8 +157,9 @@ class RequestController extends Controller
     /**
      * Update request.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $requestData = RequestModel::findOrFail($id);
 
         if ($requestData->user_id !== Auth::id()) {
@@ -192,8 +197,9 @@ class RequestController extends Controller
     /**
      * Customer accepts the technician's price
      */
-    public function acceptPrice($id)
+    public function acceptPrice($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {
@@ -230,8 +236,9 @@ class RequestController extends Controller
     /**
      * Customer rejects the price and releases the technician
      */
-    public function rejectPrice($id)
+    public function rejectPrice($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {
@@ -261,8 +268,9 @@ class RequestController extends Controller
     /**
      * Delete a media file from request
      */
-    public function deleteMedia($id, $mediaId)
+    public function deleteMedia($encryptedId, $mediaId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {
@@ -286,8 +294,9 @@ class RequestController extends Controller
     /**
      * Customer negotiates a different price
      */
-    public function negotiatePrice(Request $validateRequest, $id)
+    public function negotiatePrice(Request $validateRequest, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {
@@ -313,9 +322,10 @@ class RequestController extends Controller
             ->with('success', 'تم إرسال السعر المعدل للفني. في انتظار موافقته.');
     }
 
-    public function acceptProposal($proposalId)
+    public function acceptProposal($encryptedId)
     {
-        $proposal = \App\Models\RequestProposal::with('request')->findOrFail($proposalId);
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $proposal = \App\Models\RequestProposal::with('request')->findOrFail($id);
         $request = $proposal->request;
 
         if ($request->user_id !== Auth::id()) {
@@ -323,7 +333,7 @@ class RequestController extends Controller
         }
 
         \App\Models\RequestProposal::where('request_id', $request->id)
-            ->where('id', '!=', $proposalId)
+            ->where('id', '!=', $id)
             ->update(['status' => 'rejected']);
 
         $proposal->update(['status' => 'accepted']);
@@ -339,9 +349,10 @@ class RequestController extends Controller
         return back()->with('success', 'تم قبول العرض بنجاح!');
     }
 
-    public function rejectProposal($proposalId)
+    public function rejectProposal($encryptedId)
     {
-        $proposal = \App\Models\RequestProposal::with('request')->findOrFail($proposalId);
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $proposal = \App\Models\RequestProposal::with('request')->findOrFail($id);
         $request = $proposal->request;
 
         if ($request->user_id !== Auth::id()) {
@@ -381,8 +392,9 @@ class RequestController extends Controller
         return back()->with('success', 'تم إرسال التقييم بنجاح');
     }
 
-    public function invoice($id)
+    public function invoice($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::with([
             'user', 
             'service', 

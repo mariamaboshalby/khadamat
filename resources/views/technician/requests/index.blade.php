@@ -81,12 +81,12 @@
                     </div>
                     
                     <div class="request-actions">
-                        <a href="{{ route('technician.repair-requests.show', $request->id) }}" 
+                        <a href="{{ route('technician.repair-requests.show', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" 
                            class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-eye me-1"></i>التفاصيل
                         </a>
                         
-                        <a href="{{ route('technician.repair-requests.pricing', $request->id) }}" 
+                        <a href="{{ route('technician.repair-requests.pricing', \App\Helpers\EncryptionHelper::encryptId($request->id)) }}" 
                            class="btn btn-success btn-sm">
                             <i class="fas fa-calculator me-1"></i>تقديم عرض
                         </a>

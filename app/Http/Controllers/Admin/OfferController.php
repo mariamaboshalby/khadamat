@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Offer;
 use Illuminate\Http\Request;
-
+use App\Helpers\EncryptionHelper;
 class OfferController extends AdminController
 {
     /**
@@ -40,29 +40,34 @@ class OfferController extends AdminController
             'discount_color_class' => 'nullable|string|max:50',
         ]);
 
-        // Provide default values for required fields
-        $validated['icon'] = $validated['icon'] ?: 'fa-tag';
-        $validated['gradient_class'] = 'promo-1'; // Default gradient class
+        $validated['icon'] = $validated['icon'] ?? 'fa-tag';
+        $validated['gradient_class'] = 'promo-1';
 
         Offer::create($validated);
 
-        return redirect()->route('admin.offers.index')
+        return redirect()
+            ->route('admin.offers.index')
             ->with('success', 'تم إضافة العرض بنجاح');
     }
 
     /**
      * Show the form for editing the specified offer.
      */
-    public function edit(Offer $offer)
+    public function edit($encryptedId)
     {
-        return view('admin.offers.edit', compact('offer'));
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $offer = Offer::findOrFail($id);
+        
+        return view('admin.offers.edit', compact('offer', 'encryptedId'));
     }
 
     /**
      * Update the specified offer in storage.
      */
-    public function update(Request $request, Offer $offer)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $offer = Offer::findOrFail($id);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'subtitle_1' => 'nullable|string|max:255',
@@ -74,24 +79,28 @@ class OfferController extends AdminController
             'discount_color_class' => 'nullable|string|max:50',
         ]);
 
-        // Provide default values for required fields
-        $validated['icon'] = $validated['icon'] ?: 'fa-tag';
-        $validated['gradient_class'] = 'promo-1'; // Default gradient class
+        $validated['icon'] = $validated['icon'] ?? 'fa-tag';
+        $validated['gradient_class'] = 'promo-1';
 
         $offer->update($validated);
 
-        return redirect()->route('admin.offers.index')
+        return redirect()
+            ->route('admin.offers.index')
             ->with('success', 'تم تحديث العرض بنجاح');
     }
 
     /**
      * Remove the specified offer from storage.
      */
-    public function destroy(Offer $offer)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $offer = Offer::findOrFail($id);
+        
         $offer->delete();
 
-        return redirect()->route('admin.offers.index')
+        return redirect()
+            ->route('admin.offers.index')
             ->with('success', 'تم حذف العرض بنجاح');
     }
 }

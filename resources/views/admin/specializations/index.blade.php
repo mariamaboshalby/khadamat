@@ -50,12 +50,12 @@
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.specializations.edit', $specialization) }}" class="btn btn-sm btn-light text-primary" title="تعديل">
+                                        <a href="{{ route('admin.specializations.edit', \App\Helpers\EncryptionHelper::encryptId($specialization->id)) }}" class="btn btn-sm btn-light text-primary" title="تعديل">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         
                                         @if($specialization->technicians_count == 0)
-                                            <form method="POST" action="{{ route('admin.specializations.destroy', $specialization) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التخصص؟')">
+                                            <form method="POST" action="{{ route('admin.specializations.destroy', \App\Helpers\EncryptionHelper::encryptId($specialization->id)) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا التخصص؟')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-light text-danger" title="حذف">

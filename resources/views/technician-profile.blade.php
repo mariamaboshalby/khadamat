@@ -246,7 +246,7 @@
                 <h5 class="modal-title" id="addReviewModalLabel">إضافة تقييم للفني</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('technician.review', $technician->id) }}" method="POST">
+            <form action="{{ route('technician.review', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">

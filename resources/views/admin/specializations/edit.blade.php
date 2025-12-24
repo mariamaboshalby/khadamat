@@ -32,7 +32,7 @@
         <!-- Card Body -->
         <div class="card-body p-4">
             <form method="POST"
-                  action="{{ route('admin.specializations.update', $specialization) }}">
+                  action="{{ route('admin.specializations.update', $specialization->id) }}">
                 @csrf
                 @method('PUT')
 

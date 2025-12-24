@@ -82,7 +82,7 @@
                                             <div class="card-header bg-{{ $proposal->status === 'accepted' ? 'success' : ($proposal->status === 'rejected' ? 'danger' : 'warning') }} text-white">
                                                 <h5 class="mb-0">
                                                     <i class="fas fa-user-cog me-2"></i>
-                                                    <a href="{{ route('technician.profile', $proposal->technician_id) }}" class="text-white text-decoration-none" target="_blank">
+                                                    <a href="{{ route('technician.profile', \App\Helpers\EncryptionHelper::encryptId($proposal->technician_id)) }}" class="text-white text-decoration-none" target="_blank">
                                                         {{ $proposal->technician->user->name }}
                                                         <i class="fas fa-external-link-alt ms-1" style="font-size: 12px;"></i>
                                                     </a>
@@ -133,13 +133,13 @@
                                                 
                                                 @if($proposal->status === 'pending' && $requestData->status !== 'in_progress')
                                                     <div class="mt-3">
-                                                        <form method="POST" action="{{ route('requests.accept-proposal', $proposal->id) }}" class="d-inline">
+                                                        <form method="POST" action="{{ route('requests.accept-proposal', \App\Helpers\EncryptionHelper::encryptId($proposal->id)) }}" class="d-inline">
                                                             @csrf
                                                             <button type="submit" class="btn btn-success btn-sm">
                                                                 <i class="fas fa-check me-1"></i> قبول العرض
                                                             </button>
                                                         </form>
-                                                        <form method="POST" action="{{ route('requests.reject-proposal', $proposal->id) }}" class="d-inline">
+                                                        <form method="POST" action="{{ route('requests.reject-proposal', \App\Helpers\EncryptionHelper::encryptId($proposal->id)) }}" class="d-inline">
                                                             @csrf
                                                             <button type="submit" class="btn btn-danger btn-sm">
                                                                 <i class="fas fa-times me-1"></i> رفض
@@ -222,7 +222,7 @@
                                 @endif
 
                                 <div class="d-flex gap-2 flex-wrap">
-                                    <form method="POST" action="{{ route('requests.accept-price', $requestData->id) }}" class="d-inline">
+                                    <form method="POST" action="{{ route('requests.accept-price', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-success">
                                             <i class="fas fa-check me-1"></i> قبول السعر
@@ -241,7 +241,7 @@
                     @if($requestData->status === 'completed' && !$requestData->reviews()->where('user_id', auth()->id())->exists())
                         <div class="mb-5">
                             <h4 class="fw-bold text-primary mb-3"><i class="fas fa-star me-2"></i>تقييم الفني</h4>
-                            <form method="POST" action="{{ route('requests.submit-review', $requestData->id) }}">
+                            <form method="POST" action="{{ route('requests.submit-review', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}">
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label">التقييم</label>
@@ -280,12 +280,12 @@
                     <div class="text-center mt-4">
                         <div class="d-flex gap-2 justify-content-center flex-wrap">
                             @if(in_array($requestData->status, ['in_progress', 'completed']))
-                                <a href="{{ route('requests.invoice', $requestData->id) }}" class="btn btn-lg btn-success px-5 py-2 fw-bold" target="_blank">
+                                <a href="{{ route('requests.invoice', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}" class="btn btn-lg btn-success px-5 py-2 fw-bold" target="_blank">
                                     <i class="fas fa-file-invoice me-2"></i> عرض الفاتورة
                                 </a>
                             @endif
                             @if($requestData->status === 'pending')
-                                <a href="{{ route('requests.edit', $requestData->id) }}" class="btn btn-lg btn-warning px-5 py-2 fw-bold">
+                                <a href="{{ route('requests.edit', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}" class="btn btn-lg btn-warning px-5 py-2 fw-bold">
                                     <i class="fas fa-edit me-2"></i> تعديل الطلب
                                 </a>
                             @endif
@@ -309,7 +309,7 @@
                         <h5 class="modal-title">رفض العرض</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="{{ route('requests.reject-price', $requestData->id) }}">
+                    <form method="POST" action="{{ route('requests.reject-price', \App\Helpers\EncryptionHelper::encryptId($requestData->id)) }}">
                         @csrf
                         <div class="modal-body">
                             <div class="alert alert-warning">

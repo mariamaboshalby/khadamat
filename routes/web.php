@@ -24,7 +24,7 @@ use App\Http\Controllers\NotificationsController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/services', [HomeController::class, 'services'])->name('services.index');
 Route::get('/offers', [HomeController::class, 'offers'])->name('offers.index');
-Route::get('/service/{id}', [HomeController::class, 'serviceShow'])->name('service.show');
+Route::get('/service/{encryptedId}', [HomeController::class, 'serviceShow'])->name('service.show');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -48,34 +48,34 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/',        [RequestController::class, 'index'])->name('requests.index');
         Route::get('/create',  [RequestController::class, 'create'])->name('requests.create');
         Route::post('/',       [RequestController::class, 'store'])->name('requests.store');
-        Route::get('/{id}',    [RequestController::class, 'show'])->name('requests.show');
-        Route::get('/{id}/edit', [RequestController::class, 'edit'])->name('requests.edit');
-        Route::put('/{id}',    [RequestController::class, 'update'])->name('requests.update');
-        Route::delete('/{id}', [RequestController::class, 'destroy'])->name('requests.destroy');
-        Route::delete('/{id}/media/{mediaId}', [RequestController::class, 'deleteMedia'])->name('requests.delete-media');
+        Route::get('/{encryptedId}',    [RequestController::class, 'show'])->name('requests.show');
+        Route::get('/{encryptedId}/edit', [RequestController::class, 'edit'])->name('requests.edit');
+        Route::put('/{encryptedId}',    [RequestController::class, 'update'])->name('requests.update');
+        Route::delete('/{encryptedId}', [RequestController::class, 'destroy'])->name('requests.destroy');
+        Route::delete('/{encryptedId}/media/{mediaId}', [RequestController::class, 'deleteMedia'])->name('requests.delete-media');
     });
     
     // Customer Pricing
-    Route::get('/pricing/{id}', [\App\Http\Controllers\CustomerPricingController::class, 'show'])->name('pricing.show');
-    Route::post('/pricing/{id}/accept', [\App\Http\Controllers\CustomerPricingController::class, 'accept'])->name('requests.accept-price');
-    Route::post('/pricing/{id}/reject', [\App\Http\Controllers\CustomerPricingController::class, 'reject'])->name('requests.reject-price');
+    Route::get('/pricing/{encryptedId}', [\App\Http\Controllers\CustomerPricingController::class, 'show'])->name('pricing.show');
+    Route::post('/pricing/{encryptedId}/accept', [\App\Http\Controllers\CustomerPricingController::class, 'accept'])->name('requests.accept-price');
+    Route::post('/pricing/{encryptedId}/reject', [\App\Http\Controllers\CustomerPricingController::class, 'reject'])->name('requests.reject-price');
     
-    Route::post('/proposals/{id}/accept', [RequestController::class, 'acceptProposal'])->name('requests.accept-proposal');
-    Route::post('/proposals/{id}/reject', [RequestController::class, 'rejectProposal'])->name('requests.reject-proposal');
+    Route::post('/proposals/{encryptedId}/accept', [RequestController::class, 'acceptProposal'])->name('requests.accept-proposal');
+    Route::post('/proposals/{encryptedId}/reject', [RequestController::class, 'rejectProposal'])->name('requests.reject-proposal');
     
-    Route::post('/requests/{id}/review', [RequestController::class, 'submitReview'])->name('requests.submit-review');
+    Route::post('/requests/{encryptedId}/review', [RequestController::class, 'submitReview'])->name('requests.submit-review');
     
-    Route::get('/requests/{id}/invoice', [RequestController::class, 'invoice'])->name('requests.invoice');
+    Route::get('/requests/{encryptedId}/invoice', [RequestController::class, 'invoice'])->name('requests.invoice');
 });
 
-Route::get('/technician/{id}/profile', [HomeController::class, 'technicianProfile'])->name('technician.profile');
-Route::post('/technician/{id}/review', [HomeController::class, 'submitTechnicianReview'])->name('technician.review');
+Route::get('/technician/{encryptedId}/profile', [HomeController::class, 'technicianProfile'])->name('technician.profile');
+Route::post('/technician/{encryptedId}/review', [HomeController::class, 'submitTechnicianReview'])->name('technician.review');
 
 // Notifications
 Route::middleware(['auth'])->group(function () {
     Route::get('/notifications/unread-count', [NotificationsController::class, 'unreadCount'])->name('notifications.unread-count');
     Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::post('/notifications/{encryptedId}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 });
 
@@ -92,43 +92,70 @@ Route::prefix('admin')
         Route::get('/reviews/export', [ReviewController::class, 'export'])->name('reviews.export');
 
         // Customers
-        Route::resource('customers', CustomerController::class);
+        Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('customers/create', [CustomerController::class, 'create'])->name('customers.create');
+        Route::post('customers', [CustomerController::class, 'store'])->name('customers.store');
+        Route::get('customers/{encryptedId}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::get('customers/{encryptedId}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('customers/{encryptedId}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::delete('customers/{encryptedId}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
         // Technicians
         Route::get('techs', [TechnicianController::class, 'index'])->name('techs.index');
         Route::get('techs/create', [TechnicianController::class, 'create'])->name('techs.create');
         Route::post('techs', [TechnicianController::class, 'store'])->name('techs.store');
-        Route::get('techs/{technician}', [TechnicianController::class, 'show'])->name('techs.show');
-        Route::get('techs/{tech}/edit', [TechnicianController::class, 'edit'])->name('techs.edit');
-        Route::put('techs/{tech}', [TechnicianController::class, 'update'])->name('techs.update');
-        Route::delete('techs/{tech}', [TechnicianController::class, 'destroy'])->name('techs.destroy');
+        Route::get('techs/{encryptedId}', [TechnicianController::class, 'show'])->name('techs.show');
+        Route::get('techs/{encryptedId}/edit', [TechnicianController::class, 'edit'])->name('techs.edit');
+        Route::put('techs/{encryptedId}', [TechnicianController::class, 'update'])->name('techs.update');
+        Route::delete('techs/{encryptedId}', [TechnicianController::class, 'destroy'])->name('techs.destroy');
 
         // Specializations
-        Route::resource('specializations', SpecializationController::class)->except(['show']);
+        Route::get('specializations', [SpecializationController::class, 'index'])->name('specializations.index');
+        Route::get('specializations/create', [SpecializationController::class, 'create'])->name('specializations.create');
+        Route::post('specializations', [SpecializationController::class, 'store'])->name('specializations.store');
+        Route::get('specializations/{encryptedId}/edit', [SpecializationController::class, 'edit'])->name('specializations.edit');
+        Route::put('specializations/{encryptedId}', [SpecializationController::class, 'update'])->name('specializations.update');
+        Route::delete('specializations/{encryptedId}', [SpecializationController::class, 'destroy'])->name('specializations.destroy');
 
         // Services
-        Route::resource('services', ServiceController::class);
+        Route::get('services', [ServiceController::class, 'index'])->name('services.index');
+        Route::get('services/create', [ServiceController::class, 'create'])->name('services.create');
+        Route::post('services', [ServiceController::class, 'store'])->name('services.store');
+        Route::get('services/{encryptedId}', [ServiceController::class, 'show'])->name('services.show');
+        Route::get('services/{encryptedId}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+        Route::put('services/{encryptedId}', [ServiceController::class, 'update'])->name('services.update');
+        Route::delete('services/{encryptedId}', [ServiceController::class, 'destroy'])->name('services.destroy');
 
         // Offers
-        Route::resource('offers', OfferController::class);
+        Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+        Route::get('offers/create', [OfferController::class, 'create'])->name('offers.create');
+        Route::post('offers', [OfferController::class, 'store'])->name('offers.store');
+        Route::get('offers/{encryptedId}/edit', [OfferController::class, 'edit'])->name('offers.edit');
+        Route::put('offers/{encryptedId}', [OfferController::class, 'update'])->name('offers.update');
+        Route::delete('offers/{encryptedId}', [OfferController::class, 'destroy'])->name('offers.destroy');
 
         // Warehouse Items
         Route::get('/warehouse-items/low-stock', [WarehouseItemController::class, 'lowStock'])
             ->name('warehouse-items.low-stock');
 
-        Route::resource('warehouse-items', WarehouseItemController::class);
+        Route::get('warehouse-items', [WarehouseItemController::class, 'index'])->name('warehouse-items.index');
+        Route::get('warehouse-items/create', [WarehouseItemController::class, 'create'])->name('warehouse-items.create');
+        Route::post('warehouse-items', [WarehouseItemController::class, 'store'])->name('warehouse-items.store');
+        Route::get('warehouse-items/{encryptedId}/edit', [WarehouseItemController::class, 'edit'])->name('warehouse-items.edit');
+        Route::put('warehouse-items/{encryptedId}', [WarehouseItemController::class, 'update'])->name('warehouse-items.update');
+        Route::delete('warehouse-items/{encryptedId}', [WarehouseItemController::class, 'destroy'])->name('warehouse-items.destroy');
 
         Route::get('/requests', [AdminRequestController::class, 'index'])->name('requests.index');
 
         // عرض تفاصيل الطلب للأدمن
-        Route::get('/requests/{id}', [AdminRequestController::class, 'show'])->name('requests.show');
+        Route::get('/requests/{encryptedId}', [AdminRequestController::class, 'show'])->name('requests.show');
 
         // تحديث حالة الطلب
-        Route::patch('/requests/{id}/status', [AdminRequestController::class, 'updateStatus'])
+        Route::patch('/requests/{encryptedId}/status', [AdminRequestController::class, 'updateStatus'])
             ->name('requests.update-status');
         
         // الفاتورة
-        Route::get('/requests/{id}/invoice', [AdminRequestController::class, 'invoice'])->name('requests.invoice');
+        Route::get('/requests/{encryptedId}/invoice', [AdminRequestController::class, 'invoice'])->name('requests.invoice');
     });
 
 Route::prefix('technician')
@@ -142,23 +169,23 @@ Route::prefix('technician')
         Route::get('/my-requests', [TechnicianRequestController::class, 'myRequests'])->name('my-requests');
         
         // عرض تفاصيل طلب إصلاح
-        Route::get('/repair-requests/{id}', [TechnicianRequestController::class, 'show'])->name('repair-requests.show');
+        Route::get('/repair-requests/{encryptedId}', [TechnicianRequestController::class, 'show'])->name('repair-requests.show');
         
         // صفحة التسعير
-        Route::get('/repair-requests/{id}/pricing', [TechnicianRequestController::class, 'pricing'])->name('repair-requests.pricing');
+        Route::get('/repair-requests/{encryptedId}/pricing', [TechnicianRequestController::class, 'pricing'])->name('repair-requests.pricing');
         
         // إرسال عرض السعر
-        Route::post('/repair-requests/{id}/pricing', [TechnicianRequestController::class, 'submitPricing'])->name('repair-requests.submit-pricing');
+        Route::post('/repair-requests/{encryptedId}/pricing', [TechnicianRequestController::class, 'submitPricing'])->name('repair-requests.submit-pricing');
         
         // قبول/رفض السعر المعدل من العميل
-        Route::post('/repair-requests/{id}/accept-negotiation', [TechnicianRequestController::class, 'acceptNegotiation'])->name('repair-requests.accept-negotiation');
-        Route::post('/repair-requests/{id}/reject-negotiation', [TechnicianRequestController::class, 'rejectNegotiation'])->name('repair-requests.reject-negotiation');
+        Route::post('/repair-requests/{encryptedId}/accept-negotiation', [TechnicianRequestController::class, 'acceptNegotiation'])->name('repair-requests.accept-negotiation');
+        Route::post('/repair-requests/{encryptedId}/reject-negotiation', [TechnicianRequestController::class, 'rejectNegotiation'])->name('repair-requests.reject-negotiation');
         
         // التقديم على طلب إصلاح
-        Route::post('/repair-requests/{id}/apply', [TechnicianRequestController::class, 'apply'])->name('repair-requests.apply');
+        Route::post('/repair-requests/{encryptedId}/apply', [TechnicianRequestController::class, 'apply'])->name('repair-requests.apply');
         
         // إنهاء الطلب
-        Route::post('/repair-requests/{id}/complete', [TechnicianRequestController::class, 'complete'])->name('repair-requests.complete');
+        Route::post('/repair-requests/{encryptedId}/complete', [TechnicianRequestController::class, 'complete'])->name('repair-requests.complete');
 
         // Profile
         Route::get('/profile', [TechnicianProfileController::class, 'edit'])->name('profile.edit');

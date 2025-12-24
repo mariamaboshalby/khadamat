@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\AdminLowStockAlert;
+use App\Helpers\EncryptionHelper;
 
 class WarehouseItemController extends AdminController
 {
@@ -84,18 +85,23 @@ class WarehouseItemController extends AdminController
     /**
      * Show the form for editing the specified warehouse item.
      */
-    public function edit(WarehouseItem $warehouseItem)
+    public function edit($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $warehouseItem = WarehouseItem::findOrFail($id);
+        
         $categories = Specialization::active()->pluck('name', 'id');
         
-        return view('admin.warehouse-items.edit', compact('warehouseItem', 'categories'));
+        return view('admin.warehouse-items.edit', compact('warehouseItem', 'categories', 'encryptedId'));
     }
 
     /**
      * Update the specified warehouse item in storage.
      */
-    public function update(Request $request, WarehouseItem $warehouseItem)
+    public function update(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $warehouseItem = WarehouseItem::findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -133,8 +139,11 @@ class WarehouseItemController extends AdminController
     /**
      * Remove the specified warehouse item from storage.
      */
-    public function destroy(WarehouseItem $warehouseItem)
+    public function destroy($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
+        $warehouseItem = WarehouseItem::findOrFail($id);
+        
         $warehouseItem->delete();
 
         return redirect()->route('admin.warehouse-items.index')

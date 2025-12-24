@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.customers.edit', $customer) }}" 
+            <a href="{{ route('admin.customers.edit', \App\Helpers\EncryptionHelper::encryptId($customer->id)) }}" 
                class="btn px-4 py-2"
                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 8px -2px rgba(16, 185, 129, 0.4); transition: all 0.3s;"
                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px -4px rgba(16, 185, 129, 0.5)'"

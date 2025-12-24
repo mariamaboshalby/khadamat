@@ -198,12 +198,12 @@
 
     <!-- Action Buttons -->
     <div class="mt-4 d-flex gap-3 justify-content-end">
-        <a href="{{ route('admin.techs.edit', $technician) }}" 
+        <a href="{{ route('admin.techs.show', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" 
            class="btn btn-primary px-4 fw-bold"
            style="background: linear-gradient(135deg, #ff7373 0%, #cc3333 100%); border: none; box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3);">
             <i class="fa-solid fa-pen-to-square me-2"></i> تعديل البيانات
         </a>
-        <form method="POST" action="{{ route('admin.techs.destroy', $technician) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الفني؟')">
+        <form method="POST" action="{{ route('admin.techs.destroy', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الفني؟')">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger px-4 fw-bold">

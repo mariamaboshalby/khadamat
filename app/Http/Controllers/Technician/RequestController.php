@@ -10,6 +10,7 @@ use App\Notifications\TechnicianNewRequestAvailable;
 use App\Notifications\NewOfferOnRequest;
 use App\Models\Technician;
 use App\Models\User;
+use App\Helpers\EncryptionHelper;
 
 class RequestController extends Controller
 {
@@ -80,8 +81,9 @@ class RequestController extends Controller
     /**
      * Show request details
      */
-    public function show($id)
+    public function show($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::with(['user', 'service', 'service.specialization', 'media'])->findOrFail($id);
         
         $user = Auth::user();
@@ -100,8 +102,9 @@ class RequestController extends Controller
     /**
      * Show pricing form for technician
      */
-    public function pricing($id)
+    public function pricing($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::with(['user', 'service', 'requestItems.warehouseItem'])->findOrFail($id);
         
         $user = Auth::user();
@@ -134,8 +137,9 @@ class RequestController extends Controller
     /**
      * Submit pricing proposal
      */
-    public function submitPricing(Request $request, $id)
+    public function submitPricing(Request $request, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $requestData = RequestModel::findOrFail($id);
         
         $user = Auth::user();
@@ -189,8 +193,9 @@ class RequestController extends Controller
     /**
      * Apply for a repair request
      */
-    public function apply($id)
+    public function apply($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $user = Auth::user();
         
         // Check if user is admin or technician
@@ -251,8 +256,9 @@ class RequestController extends Controller
     /**
      * Technician accepts customer's negotiated price
      */
-    public function acceptNegotiation($id)
+    public function acceptNegotiation($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
         
         $user = Auth::user();
@@ -276,8 +282,9 @@ class RequestController extends Controller
     /**
      * Technician rejects customer's negotiated price
      */
-    public function rejectNegotiation($id)
+    public function rejectNegotiation($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
         
         $user = Auth::user();
@@ -307,8 +314,9 @@ class RequestController extends Controller
             ->with('success', 'تم رفض السعر المعدل. الطلب متاح للفنيين الآخرين.');
     }
 
-    public function complete($id)
+    public function complete($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
         $user = Auth::user();
         $technician = $user->technician;

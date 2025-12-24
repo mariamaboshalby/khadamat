@@ -22,7 +22,7 @@
     <div id="services-container" class="row g-3">
         @foreach($services as $service)
             <div class="col-6 col-md-4 col-lg-3 service-item" data-service-name="{{ $service->name }}">
-                <a href="{{ route('service.show', $service->id) }}" class="service-card-modern h-100 d-block text-decoration-none">
+                <a href="{{ route('service.show', \App\Helpers\EncryptionHelper::encryptId($service->id)) }}" class="service-card-modern h-100 d-block text-decoration-none">
                     <div class="card border-0 shadow-sm h-100 p-3 text-center" style="border-radius: 20px; transition: transform 0.2s;">
                         <div class="icon-wrapper mx-auto mb-3 {{ $service->color_class }}" style="width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <i class="fas {{ $service->icon }}"></i>
