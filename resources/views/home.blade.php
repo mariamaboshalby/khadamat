@@ -145,15 +145,6 @@
                                     <i class="fas fa-list-alt"></i>
                                     <span>إدارة جميع المراجعات</span>
                                 </button>
-                                <div class="admin-menu-divider"></div>
-                                <button class="admin-menu-item" onclick="exportReviews()">
-                                    <i class="fas fa-download"></i>
-                                    <span>تصدير البيانات</span>
-                                </button>
-                                <button class="admin-menu-item" onclick="reviewSettings()">
-                                    <i class="fas fa-cog"></i>
-                                    <span>إعدادات المراجعات</span>
-                                </button>
                             </div>
                         </div>
                     </div>
