@@ -7,7 +7,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-
+            
             <p class="text-muted mb-0">عرض كامل تفاصيل الطلب</p>
         </div>
         <div class="d-flex gap-2">

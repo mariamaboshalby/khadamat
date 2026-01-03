@@ -244,19 +244,7 @@
                     <div class="menu-subtitle">عرض وتتبع الطلبات</div>
                 </div>
                 <i class="fas fa-chevron-left menu-arrow"></i>
-            </a>
-            
-            <a href="{{ route('profile.edit') }}" class="menu-list-item">
-                <div class="menu-icon" style="background: #f3e5f5; color: #9c27b0;">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">العناوين</div>
-                    <div class="menu-subtitle">إدارة عناوين التوصيل</div>
-                </div>
-                <i class="fas fa-chevron-left menu-arrow"></i>
-            </a>
-            
+            </a>            
             <a href="{{ route('notifications.index') }}" class="menu-list-item">
                 <div class="menu-icon" style="background: #fff3e0; color: #ff9800;">
                     <i class="fas fa-bell"></i>
@@ -264,17 +252,6 @@
                 <div class="menu-content">
                     <div class="menu-title">الإشعارات</div>
                     <div class="menu-subtitle">إعدادات التنبيهات</div>
-                </div>
-                <i class="fas fa-chevron-left menu-arrow"></i>
-            </a>
-            
-            <a href="{{ route('home') }}" class="menu-list-item">
-                <div class="menu-icon" style="background: #e0f2f1; color: #009688;">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">الدعم الفني</div>
-                    <div class="menu-subtitle">تواصل معنا</div>
                 </div>
                 <i class="fas fa-chevron-left menu-arrow"></i>
             </a>
