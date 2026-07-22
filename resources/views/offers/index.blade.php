@@ -16,8 +16,8 @@
     <div class="row g-4">
         @php
             $gradients = [
-                'linear-gradient(135deg, #cc3333 0%, #ff6666 100%)',
-                'linear-gradient(135deg, #cc3333 0%, #ff6666 100%)',
+                'linear-gradient(135deg, #0b5f8a 0%, #ff6666 100%)',
+                'linear-gradient(135deg, #0b5f8a 0%, #ff6666 100%)',
                 'linear-gradient(135deg, #f97316 0%, #ec4899 100%)',
                 'linear-gradient(135deg, #10b981 0%, #ff6666 100%)',
             ];

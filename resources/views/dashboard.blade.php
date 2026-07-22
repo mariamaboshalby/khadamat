@@ -224,7 +224,7 @@
 
         .service-icon-sm.blue {
             background: #ffecec;
-            color: #cc3333;
+            color: #0b5f8a;
         }
 
         .request-detail {

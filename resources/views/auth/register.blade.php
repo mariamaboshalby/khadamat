@@ -9,7 +9,7 @@
         <!-- Logo -->
         <div class="text-center ">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="" style="height: 100px; width: 200px;">
-            <h4 class="fw-bold " style="color: #e54343;">إنشاء حساب جديد</h4>
+            <h4 class="fw-bold " style="color: #083a56;">إنشاء حساب جديد</h4>
         </div>
 
         <!-- Register Form -->
@@ -77,7 +77,7 @@
                     <!-- Login Link -->
                     <div class="text-center">
                         <span class="text-muted small">لديك حساب بالفعل؟</span>
-                        <a href="{{ route('login') }}" class=" fw-bold small text-decoration-none ms-1"  style="color: #e54343;">تسجيل الدخول</a>
+                        <a href="{{ route('login') }}" class=" fw-bold small text-decoration-none ms-1"  style="color: #083a56;">تسجيل الدخول</a>
                     </div>
                 </form>
             </div>

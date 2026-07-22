@@ -44,7 +44,7 @@
     }
     
     .edit-profile-btn {
-        background: #e54343;
+        background: #083a56;
         color: white;
         border: none;
         border-radius: 12px;
@@ -57,7 +57,7 @@
     }
     
     .edit-profile-btn:hover {
-        background: #cc3333;
+        background: #0b5f8a;
         color: white;
     }
     
@@ -222,7 +222,7 @@
         <!-- Profile Info Card -->
         <div class="profile-card">
             <div class="profile-avatar-section">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=e54343&color=fff&size=180" 
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=083a56&color=fff&size=180" 
                      class="profile-avatar" 
                      alt="صورة الملف الشخصي">
                 <div class="profile-name">{{ Auth::user()->name }}</div>

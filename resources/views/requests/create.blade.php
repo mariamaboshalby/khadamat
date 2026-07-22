@@ -22,7 +22,7 @@
 
         <!-- Card Header -->
         <div class="card-header text-white border-0 "
-             style="background: linear-gradient(135deg, #cc3333,#ff7373); height:auto">
+             style="background: linear-gradient(135deg, #0b5f8a,#ff7373); height:auto">
             <div class="d-flex justify-content-between align-items-center m-1">
                 <div>
                     <h5 class="fw-bold mb-1 " style="font-size: 30px;">بيانات الطلب</h5>

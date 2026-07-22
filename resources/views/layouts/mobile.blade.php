@@ -25,11 +25,11 @@
 
     <style>
         :root {
-            --primary-color: #cc3333;
-            --primary-dark: #992626;
-            --primary-light: #ff6666;
-            --secondary-color: #f59e0b;
-            --accent-color: #10b981;
+            --primary-color: #0b5f8a;
+            --primary-dark: #083a56;
+            --primary-light: #3aa0d6;
+            --secondary-color: #ff8a00;
+            --accent-color: #ff8a00;
             --bg-color: #f1f5f9;
             /* Slightly darker for better contrast */
             --surface-color: #ffffff;
@@ -225,25 +225,25 @@
         }
 
         .btn-primary {
-            background: #e54343;
+            background: #083a56;
             color: white;
-            border: #e54343;
+            border: #083a56;
             text-decoration: none;
             padding: 8px 15px;
         }
 
         .btn-primary:hover {
-            background: #cc3333;
+            background: #0b5f8a;
             color: white;
-            border: #cc3333;
+            border: #0b5f8a;
             text-decoration: none;
             padding: 8px 15px;
         }
 
         .btn-outline-primary {
-            color: #e54343;
+            color: #083a56;
             background: transparent;
-            border: 1px solid #e54343;
+            border: 1px solid #083a56;
             text-decoration: none;
             padding: 5px 15px;
             transition: 0.4s;
@@ -251,8 +251,8 @@
 
         .btn-outline-primary:hover {
             color: #fff;
-            background: #e54343;
-            border: 1px solid #e54343;
+            background: #083a56;
+            border: 1px solid #083a56;
             text-decoration: none;
             padding: 5px 15px;
         }

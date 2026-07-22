@@ -42,7 +42,7 @@ class ServiceController extends AdminController
 
         // Use default values instead of null for required fields
         $validated['icon'] = $validated['icon'] ?: 'fa-handshake';
-        $validated['color_class'] = $validated['color_class'] ?: '#e54343';
+        $validated['color_class'] = $validated['color_class'] ?: '#083a56';
         $validated['route_name'] = $validated['route_name'] ?: null;
 
         Service::create($validated);
@@ -80,7 +80,7 @@ class ServiceController extends AdminController
 
         // Use default values instead of null for required fields
         $validated['icon'] = $validated['icon'] ?: 'fa-handshake';
-        $validated['color_class'] = $validated['color_class'] ?: '#e54343';
+        $validated['color_class'] = $validated['color_class'] ?: '#083a56';
         $validated['route_name'] = $validated['route_name'] ?: null;
 
         $service->update($validated);

@@ -85,7 +85,7 @@
         }
 
         .sidebar .menu-item.active {
-            background: linear-gradient(90deg, #cc3333 0%, #992626 100%);
+            background: var(--gradient-primary);
             color: #fff;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
@@ -98,7 +98,7 @@
         }
 
         .sidebar .menu-item:hover i {
-            color: #ff6666;
+            color: var(--primary-light);
         }
 
         .sidebar .menu-item.active i {
@@ -165,18 +165,18 @@
         }
 
         .btn-primary {
-            background: #e54343;
+            background: var(--primary-color);
             color: white;
-            border: #e54343;
+            border: var(--primary-color);
             text-decoration: none;
             padding: 10px 15px;
             transition: all 0.2s ease;
         }
 
         .btn-primary:hover {
-            background: #cc3333;
+            background: var(--primary-dark);
             color: white;
-            border: #cc3333;
+            border: var(--primary-dark);
             text-decoration: none;
             padding: 10px 15px;
         }
@@ -198,7 +198,7 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('notifications.index') }}" class="header-icon-btn position-relative text-decoration-none" style="color: #e54343">
+            <a href="{{ route('notifications.index') }}" class="header-icon-btn position-relative text-decoration-none" style="color: var(--danger-color)">
                 <i class="fas fa-bell fs-5"></i>
                 <span id="notification-badge"
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"

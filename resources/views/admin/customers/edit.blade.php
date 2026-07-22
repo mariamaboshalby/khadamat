@@ -17,7 +17,7 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <div class="d-flex align-items-center gap-3 mb-2">
-                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff7373 0%, #cc3333 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px -4px rgba(245, 158, 11, 0.4);">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff7373 0%, #0b5f8a 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px -4px rgba(245, 158, 11, 0.4);">
                     <i class="fa-solid fa-user-pen text-white fa-2x"></i>
                 </div>
                 <div>
@@ -37,7 +37,7 @@
 
 <div class="card shadow-sm rounded-4 animate-slide" style="animation-delay: 0.1s;">
     <div class="card-body p-0">
-        <div style="background: linear-gradient(135deg,#ff7373 0%,#cc3333 100%); padding: 24px; color: white;">
+        <div style="background: linear-gradient(135deg,#ff7373 0%,#0b5f8a 100%); padding: 24px; color: white;">
             <div class="d-flex align-items-center gap-3">
                 <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <i class="fa-solid fa-clipboard-list fa-lg"></i>

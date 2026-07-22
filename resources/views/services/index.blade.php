@@ -42,7 +42,7 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
     /* Reusing colors from home */
-    .icon-wrapper.blue { background: #ffecec; color: #cc3333; }
+    .icon-wrapper.blue { background: #ffecec; color: #0b5f8a; }
     .icon-wrapper.yellow { background: #fefce8; color: #eab308; }
     .icon-wrapper.cyan { background: #ecfeff; color: #06b6d4; }
     .icon-wrapper.orange { background: #fff7ed; color: #f97316; }

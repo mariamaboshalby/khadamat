@@ -5,18 +5,18 @@
 @section('content')
     <style>
         .btn-primary {
-            background: #e54343;
+            background: #083a56;
             color: white;
-            border: #e54343;
+            border: #083a56;
             text-decoration: none;
             padding: 3px 15px;
             margin: 5px;
         }
 
         .btn-primary:hover {
-            background: #cc3333;
+            background: #0b5f8a;
             color: white;
-            border: #cc3333;
+            border: #0b5f8a;
             text-decoration: none;
             padding: 3px 15px;
         }
