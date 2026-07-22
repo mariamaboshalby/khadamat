@@ -138,7 +138,7 @@
 .request-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border-color: #cc3333;
+    border-color: #0b5f8a;
 }
 
 .request-header {
@@ -152,7 +152,7 @@
 }
 
 .service-badge {
-    background: linear-gradient(135deg, #cc3333, #992626);
+    background: linear-gradient(135deg, #0b5f8a, #992626);
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
@@ -168,7 +168,7 @@
 .customer-avatar {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, #cc3333, #ff6666);
+    background: linear-gradient(135deg, #0b5f8a, #ff6666);
     color: white;
     border-radius: 50%;
     display: flex;

@@ -152,7 +152,7 @@
 }
 
 .technician-header {
-    background: linear-gradient(135deg, #e54343,#fd7777);
+    background: linear-gradient(135deg, #083a56,#fd7777);
     padding: 2.5rem 0;
 }
 
@@ -160,7 +160,7 @@
     width: 90px;
     height: 90px;
     background: #fff;
-    color: #e54343;
+    color: #083a56;
     border-radius: 50%;
     font-size: 2rem;
     font-weight: 700;

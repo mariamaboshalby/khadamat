@@ -19,7 +19,7 @@
     </div>
 
     <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-        <div style="background: linear-gradient(135deg, #ff7373 0%, #cc3333 100%); padding: 24px; color: white;">
+        <div style="background: linear-gradient(135deg, #ff7373 0%, #0b5f8a 100%); padding: 24px; color: white;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -498,7 +498,7 @@ function getCurrentLocation() {
     statusDiv.style.display = 'block';
     statusDiv.style.background = 'linear-gradient(135deg, rgba(204, 51, 51, 0.1) 0%, rgba(204, 51, 51, 0.05) 100%)';
     statusDiv.style.border = '2px solid rgba(204, 51, 51, 0.3)';
-    statusDiv.style.color = '#cc3333';
+    statusDiv.style.color = '#0b5f8a';
     statusDiv.innerHTML = '<div style="display: flex; align-items: center; gap: 10px;"><div class="spinner"></div><span style="font-weight: 600;">🔍 جاري تحديد موقعك الحالي...</span></div>';
 
     if (navigator.geolocation) {

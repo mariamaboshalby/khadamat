@@ -22,7 +22,7 @@
     <div class="card border-0 shadow-sm rounded-4">
 
         <!-- Card Header -->
-        <div class="card-header" style="background: linear-gradient(135deg, #ff7373 0%, #cc3333 100%); padding: 24px; color: white;">
+        <div class="card-header" style="background: linear-gradient(135deg, #ff7373 0%, #0b5f8a 100%); padding: 24px; color: white;">
             <div class="d-flex align-items-center gap-2 fw-bold">
                 <i class="fa-solid fa-layer-group"></i>
                 بيانات التخصص

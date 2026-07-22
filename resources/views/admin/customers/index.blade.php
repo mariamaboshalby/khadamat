@@ -17,7 +17,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 14px;
-            background: #cc3333;
+            background: #0b5f8a;
             color: white;
         }
        

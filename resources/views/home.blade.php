@@ -61,7 +61,7 @@
             <div class="swiper-wrapper">
                 @php
                     $gradients = [
-                        'linear-gradient(135deg, #cc3333 0%, #ff6666 100%)',
+                        'linear-gradient(135deg, #0b5f8a 0%, #ff6666 100%)',
                         'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
                         'linear-gradient(135deg, #f97316 0%, #ec4899 100%)',
                         'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
@@ -311,7 +311,7 @@
 
                 <!-- Quick Links -->
                 <div class="col-lg-3 col-md-6 text-center">
-                    <h5 class="fw-bold mb-3" style="color: #cc3333">روابط سريعة</h5>
+                    <h5 class="fw-bold mb-3" style="color: #0b5f8a">روابط سريعة</h5>
                     <ul class="list-unstyled fs-6">
                         <li class="mb-2"><a href="{{ url('/') }}" class="text-muted"
                                 style="text-decoration: none; transition: color 0.3s;">الرئيسية</a></li>
@@ -326,7 +326,7 @@
 
                 <!-- Services -->
                 <div class="col-lg-3 col-md-6 text-center">
-                    <h5 class="fw-bold mb-3" style="color: #cc3333">الخدمات</h5>
+                    <h5 class="fw-bold mb-3" style="color: #0b5f8a">الخدمات</h5>
                     <ul class="list-unstyled fs-6">
                         <li class="mb-2"><a href="{{ route('services.index') }}" class="text-muted"
                                 style="text-decoration: none; transition: color 0.3s;">سباكة</a></li>
@@ -341,7 +341,7 @@
 
                 <!-- Contact -->
                 <div class="col-lg-3 col-md-6 text-center">
-                    <h5 class="fw-bold mb-3" style="color: #cc3333">تواصل معنا</h5>
+                    <h5 class="fw-bold mb-3" style="color: #0b5f8a">تواصل معنا</h5>
                     <ul class="list-unstyled fs-6">
                         <li class="mb-3">
                             <i class="fas fa-phone me-2 " style="color: #ff7f7f"></i>

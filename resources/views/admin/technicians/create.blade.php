@@ -20,7 +20,7 @@
     </div>
     
     <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-        <div style="background: linear-gradient(135deg, #ff8787 0%,#e54343 100%); padding: 24px; color: white;">
+        <div style="background: linear-gradient(135deg, #ff8787 0%,#083a56 100%); padding: 24px; color: white;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +228,7 @@
                             تحديد الموقع تلقائياً
                         </button>
                         <button type="button" onclick="toggleManualLocation()" 
-                            style="flex: 1; padding: 12px; border: 2px dashed #cc3333; background: rgba(204, 51, 51, 0.05); color: #cc3333; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                            style="flex: 1; padding: 12px; border: 2px dashed #0b5f8a; background: rgba(204, 51, 51, 0.05); color: #0b5f8a; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;"
                             onmouseover="this.style.background='rgba(204, 51, 51, 0.1)';"
                             onmouseout="this.style.background='rgba(204, 51, 51, 0.05)';">
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -392,7 +392,7 @@ function getCurrentLocation() {
     statusDiv.style.display = 'block';
     statusDiv.style.background = 'rgba(204, 51, 51, 0.1)';
     statusDiv.style.border = '1px solid rgba(204, 51, 51, 0.3)';
-    statusDiv.style.color = '#cc3333';
+    statusDiv.style.color = '#0b5f8a';
     statusDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>جاري تحديد الموقع...';
 
     if (navigator.geolocation) {
@@ -460,7 +460,7 @@ function toggleManualLocation() {
         statusDiv.style.display = 'block';
         statusDiv.style.background = 'rgba(204, 51, 51, 0.1)';
         statusDiv.style.border = '1px solid rgba(204, 51, 51, 0.3)';
-        statusDiv.style.color = '#cc3333';
+        statusDiv.style.color = '#0b5f8a';
         statusDiv.innerHTML = '<i class="fa-solid fa-info-circle me-2"></i>يرجى إدخال إحداثيات الموقع يدوياً';
     } else {
         manualFields.style.display = 'none';

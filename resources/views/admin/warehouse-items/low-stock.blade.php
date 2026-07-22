@@ -5,9 +5,9 @@
 @section('content')
 <style>
      .btn-primary {
-            background: #e54343;
+            background: #083a56;
             color: white;
-            border: #e54343;
+            border: #083a56;
         }
 </style>
 <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">

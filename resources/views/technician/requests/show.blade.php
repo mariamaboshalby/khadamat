@@ -163,7 +163,7 @@
 @push('styles')
 <style>
 .request-header-card {
-    background: linear-gradient(135deg, #ff7373 0%, #cc3333 100%);
+    background: linear-gradient(135deg, #ff7373 0%, #0b5f8a 100%);
     color: white;
     padding: 24px;
     border-radius: 16px;
@@ -217,7 +217,7 @@
 .customer-avatar-lg {
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, #cc3333, #ff6666);
+    background: linear-gradient(135deg, #0b5f8a, #ff6666);
     color: white;
     border-radius: 50%;
     display: flex;

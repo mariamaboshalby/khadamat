@@ -51,7 +51,7 @@
                             <label for="remember_me" class="form-check-label small text-muted">تذكرني</label>
                         </div>
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="small text-decoration-none fw-bold"  style="color: #e54343;">نسيت كلمة المرور؟</a>
+                            <a href="{{ route('password.request') }}" class="small text-decoration-none fw-bold"  style="color: #083a56;">نسيت كلمة المرور؟</a>
                         @endif
                     </div>
 
@@ -63,7 +63,7 @@
                     <!-- Register Link -->
                     <div class="text-center">
                         <span class="text-muted small">ليس لديك حساب؟</span>
-                        <a href="{{ route('register') }}" class=" fw-bold small text-decoration-none ms-1" style="color: #e54343;">إنشاء حساب جديد</a>
+                        <a href="{{ route('register') }}" class=" fw-bold small text-decoration-none ms-1" style="color: #083a56;">إنشاء حساب جديد</a>
                     </div>
                 </form>
             </div>
