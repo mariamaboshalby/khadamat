@@ -9,6 +9,7 @@ use App\Models\Review;
 use App\Models\Strategy;
 use App\Models\Request as RequestModel;
 use App\Models\Technician;
+use App\Models\Specialization;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\EncryptionHelper;
 
@@ -21,6 +22,23 @@ class HomeController extends Controller
         $reviews = Review::all();
         $strategies = Strategy::orderBy('step_number')->get();
         return view('home', compact('services', 'offers', 'reviews', 'strategies'));
+    }
+
+    public function technicians(Request $request)
+    {
+        $specializations = Specialization::active()
+            ->with(['technicians' => function ($query) {
+                $query->with(['user', 'specialization', 'reviews'])
+                    ->orderByDesc('rating');
+            }])
+            ->withCount('technicians')
+            ->get();
+
+        $technicians = Technician::with(['user', 'specialization', 'reviews'])
+            ->orderByDesc('rating')
+            ->get();
+
+        return view('technicians.index', compact('specializations', 'technicians'));
     }
 
     public function services(Request $request)
@@ -51,26 +69,54 @@ class HomeController extends Controller
     // Dashboard المستخدم مع طلباته
     public function userDashboard()
     {
-        $requests = RequestModel::with('service', 'user')
-            ->where('user_id', Auth::id())
+        $userId = Auth::id();
+        $requests = RequestModel::with([
+            'service', 
+            'assignedTechnician.user', 
+            'assignedTechnician.specialization', 
+            'requestItems'
+        ])
+            ->where('user_id', $userId)
             ->orderByDesc('created_at')
             ->get();
 
-        return view('dashboard', compact('requests'));
+        $stats = [
+            'total' => $requests->count(),
+            'pending' => $requests->where('status', 'pending')->count(),
+            'in_progress' => $requests->whereIn('status', ['approved', 'in_progress'])->count(),
+            'completed' => $requests->where('status', 'completed')->count(),
+            'cancelled' => $requests->where('status', 'cancelled')->count(),
+            'pending_approval' => $requests->where('price_status', 'pending_customer_approval')->count(),
+        ];
+
+        // Find current most active ongoing request
+        $activeRequest = $requests->first(function ($req) {
+            return in_array($req->status, ['in_progress', 'approved', 'pending']);
+        });
+
+        $services = Service::all();
+        $offers = Offer::take(2)->get();
+
+        return view('dashboard', compact('requests', 'stats', 'activeRequest', 'services', 'offers'));
     }
 
     public function technicianProfile($encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        $technician =Technician::with(['user', 'specialization', 'reviews.user'])->findOrFail($id);
+        $technician = Technician::with(['user', 'specialization', 'reviews.user', 'reviews.customer'])->findOrFail($id);
         
         $completedRequests = RequestModel::where('assigned_technician_id', $id)
             ->where('status', 'completed')
             ->count();
         
         $avgRating = Review::where('technician_id', $id)->avg('rating');
+
+        $services = Service::where('specialization_id', $technician->specialization_id)->get();
+        if ($services->isEmpty()) {
+            $services = Service::all();
+        }
         
-        return view('technician-profile', compact('technician', 'completedRequests', 'avgRating'));
+        return view('technician-profile', compact('technician', 'completedRequests', 'avgRating', 'services'));
     }
 
     public function serviceShow($encryptedId)

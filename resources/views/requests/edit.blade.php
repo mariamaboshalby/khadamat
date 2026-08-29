@@ -206,6 +206,7 @@
         background: linear-gradient(135deg, var(--primary-color) 0%, #992626 100%);
         border-color: var(--primary-color);
         box-shadow: 0 4px 12px rgba(204, 51, 51, 0.3);
+        transition: 0.4s;
     }
 
     .btn-primary.btn-modern:hover {
@@ -220,6 +221,7 @@
     .btn-outline-secondary.btn-modern {
         border-color: var(--border-color);
         color: var(--text-secondary);
+        transition: 0.4s;
     }
 
     .btn-outline-secondary.btn-modern:hover {

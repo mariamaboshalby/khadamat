@@ -23,6 +23,7 @@ use App\Http\Controllers\NotificationsController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/services', [HomeController::class, 'services'])->name('services.index');
+Route::get('/technicians', [HomeController::class, 'technicians'])->name('technicians.index');
 Route::get('/offers', [HomeController::class, 'offers'])->name('offers.index');
 Route::get('/service/{encryptedId}', [HomeController::class, 'serviceShow'])->name('service.show');
 
