@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Request as RequestModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\EncryptionHelper;
 
 class CustomerPricingController extends Controller
 {
-    public function show($id)
+    public function show($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::with(['user', 'service', 'assignedTechnician.user', 'requestItems.warehouseItem'])
             ->findOrFail($id);
         
@@ -21,8 +23,9 @@ class CustomerPricingController extends Controller
         return view('customers.pricing-review', compact('request'));
     }
     
-    public function accept($id)
+    public function accept($encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
         
         if ($request->user_id !== Auth::id()) {
@@ -34,11 +37,13 @@ class CustomerPricingController extends Controller
             'status' => 'in_progress',
         ]);
         
-        return redirect()->route('dashboard')->with('success', 'تم قبول العرض بنجاح');
+        return redirect()->route('requests.show', EncryptionHelper::encryptId($request->id))
+            ->with('success', 'تم قبول عرض السعر بنجاح! بدأ الفني في تنفيذ الطلب.');
     }
     
-    public function reject(Request $httpRequest, $id)
+    public function reject(Request $httpRequest, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
         
         if ($request->user_id !== Auth::id()) {
@@ -61,6 +66,7 @@ class CustomerPricingController extends Controller
         // Delete request items
         $request->requestItems()->delete();
         
-        return redirect()->route('dashboard')->with('success', 'تم رفض العرض وإعادة الطلب للفنيين');
+        return redirect()->route('requests.show', EncryptionHelper::encryptId($request->id))
+            ->with('success', 'تم رفض عرض السعر وسيتم إعادة تعيين فني آخر لطلبك.');
     }
 }

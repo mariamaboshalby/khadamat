@@ -31,7 +31,12 @@ class Review extends Model
     // Relationships
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'customer_id');
     }
     
     public function request(): BelongsTo
@@ -84,6 +89,11 @@ class Review extends Model
             'rejected' => 'مرفوض',
             default => 'غير معروف'
         };
+    }
+
+    public function getUserNameAttribute(): string
+    {
+        return $this->user?->name ?? $this->customer?->name ?? 'عميل خدمتي';
     }
 
     public function getServiceTypeLabelAttribute(): string

@@ -139,7 +139,7 @@
         font-weight: 500;
         width: 100%;
         margin-top: 1.5rem;
-        transition: background 0.2s;
+        transition: 0.4s;
     }
     
     .logout-btn:hover {
@@ -190,7 +190,7 @@
         margin-bottom: 0.75rem;
         text-decoration: none;
         display: block;
-        transition: background 0.2s;
+        transition:  0.4s;
     }
     
     .btn-login:hover {
@@ -208,7 +208,7 @@
         width: 100%;
         text-decoration: none;
         display: block;
-        transition: all 0.2s;
+        transition: all 0.4s;
     }
     
     .btn-register:hover {

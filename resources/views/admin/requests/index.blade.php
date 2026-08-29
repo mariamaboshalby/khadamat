@@ -11,6 +11,7 @@
             text-decoration: none;
             padding: 3px 15px;
             margin: 5px;
+            transition: 0.4s;
         }
 
         .btn-primary:hover {

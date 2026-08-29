@@ -88,7 +88,18 @@ class RequestController extends Controller
     public function show($encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        $requestData = RequestModel::with(['service', 'user', 'media', 'requestItems.warehouseItem', 'proposals.technician.user', 'proposals.items.warehouseItem'])->findOrFail($id);
+        $requestData = RequestModel::with([
+            'service', 
+            'user', 
+            'media', 
+            'assignedTechnician.user', 
+            'assignedTechnician.specialization', 
+            'assignedTechnician.reviews',
+            'requestItems.warehouseItem', 
+            'proposals.technician.user', 
+            'proposals.items.warehouseItem',
+            'reviews'
+        ])->findOrFail($id);
 
         // Only the owner can view
         if ($requestData->user_id !== Auth::id()) {
