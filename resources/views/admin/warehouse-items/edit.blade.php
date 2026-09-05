@@ -3,30 +3,39 @@
 @section('title', 'تعديل صنف')
 
 @section('content')
-<style>
-    .form-label { font-weight: 600; color: #4a5568; }
-    .form-text { color: #718096; }
-    .header-avatar { width:48px; height:48px; }
-    .header-avatar i { font-size:20px; }
-    .form-control:focus { box-shadow: 0 0 0 0.2rem rgba(102,126,234,.15); border-color:#667eea; }
-    .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
-</style>
-
-<div class="container" style="max-width: 900px;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center gap-3">
-            <div class="avatar rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center header-avatar">
-                <i class="fa-solid fa-box"></i>
-            </div>
-            <div>
-                <h4 class="fw-bold text-dark mb-1">تعديل بيانات الصنف</h4>
-                <p class="text-muted mb-0">عدّل الحقول المطلوبة ثم احفظ</p>
-            </div>
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="font-size: 32px; margin: 0 0 8px; color: #2d3748; font-weight: 700;">تعديل بيانات الصنف</h1>
+            <p style="color: #718096; margin: 0; font-size: 16px;">عدّل الحقول المطلوبة ثم احفظ</p>
         </div>
-        <a href="{{ route('admin.warehouse-items.index') }}" class="btn btn-outline-secondary rounded-pill">
-            <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> رجوع للقائمة
+        <a href="{{ route('admin.warehouse-items.index') }}" 
+           style="background: white; border: 1px solid #e2e8f0; color: #4a5568; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+           onmouseover="this.style.background='#f7fafc'; this.style.transform='translateY(-1px)';"
+           onmouseout="this.style.background='white'; this.style.transform='translateY(0)';">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7"/>
+            </svg>
+            عودة للقائمة
         </a>
     </div>
+    
+    <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 16px;">
+        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 32px; color: white;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 24px; font-weight: 700; margin: 0 0 6px;">بيانات الصنف</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 15px;">يمكنك تعديل بيانات الصنف وحفظ التغييرات</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 40px;">
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
@@ -116,11 +125,19 @@
                     @enderror
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-warning text-white">
+                <div style="padding-top: 32px; border-top: 2px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;">
+                    <a href="{{ route('admin.warehouse-items.index') }}"
+                        style="padding: 14px 32px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; color: #4a5568; text-decoration: none; font-weight: 700; transition: all 0.3s ease; font-size: 16px;"
+                        onmouseover="this.style.background='#f7fafc'; this.style.borderColor='#cbd5e0'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
+                        onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        إلغاء
+                    </a>
+                    <button type="submit"
+                        style="padding: 14px 32px; border-radius: 10px; border: none; background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); color: white; font-weight: 700; transition: all 0.3s ease; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(42, 101, 146, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(42, 101, 146, 0.4)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(42, 101, 146, 0.3)';">
                         <i class="fa-solid fa-floppy-disk me-1"></i> حفظ التعديلات
                     </button>
-                    <a href="{{ route('admin.warehouse-items.index') }}" class="btn btn-outline-secondary">إلغاء</a>
                 </div>
             </form>
         </div>

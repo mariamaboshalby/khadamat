@@ -17,7 +17,7 @@ class RequestController extends Controller
             $query->where('status', $request->status);
         }
 
-        $requests = $query->paginate(10);
+        $requests = $query->paginate(10)->withQueryString();
 
         return view('admin.requests.index', compact('requests'));
     }

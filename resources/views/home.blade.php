@@ -532,7 +532,7 @@
                     <ul class="list-unstyled footer-contact-list">
                         <li class="d-flex align-items-center gap-3 mb-3">
                             <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
-                            <span>920000000</span>
+                            <span>01067596149</span>
                         </li>
                         <li class="d-flex align-items-center gap-3 mb-3">
                             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
@@ -540,17 +540,13 @@
                         </li>
                         <li class="d-flex align-items-center gap-3">
                             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                            <span>المملكة العربية السعودية / مصر</span>
+                            <span>مصر</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="footer-bottom-bar text-center pt-4 mt-4 border-top">
-                <p class="mb-0 text-muted fs-6">
-                    &copy; 2026 خدمتي المحدودة. جميع الحقوق محفوظة.
-                </p>
-            </div>
+        
         </div>
     </footer>
 
