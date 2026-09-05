@@ -28,7 +28,7 @@
             <h4 class="fw-bold text-dark mb-1">قائمة العملاء</h4>
             <p class="text-muted mb-0">إدارة العملاء المسجلين</p>
         </div>
-        <a href="{{ route('admin.customers.create') }}" class=" btn-primary rounded-pill px-4 fw-bold shadow-sm">
+        <a href="{{ route('admin.customers.create') }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
             <i class="fa-solid fa-plus me-2"></i> إضافة عميل جديد
         </a>
     </div>
@@ -55,7 +55,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn-primary rounded-3 w-100 fw-bold">
+                    <button type="submit" class="btn btn-primary rounded-3 w-100 fw-bold">
                         <i class="fa-solid fa-filter me-2"></i> تصفية
                     </button>
                 </div>
@@ -187,7 +187,7 @@
                     </div>
                     <h5 class="fw-bold text-dark">لا يوجد عملاء</h5>
                     <p class="text-muted">لم يتم العثور على أي عملاء حالياً.</p>
-                    <a href="{{ route('admin.customers.create') }}" class=" btn-primary mt-2">
+                    <a href="{{ route('admin.customers.create') }}" class="btn btn-primary mt-2">
                         <i class="fa-solid fa-plus me-2"></i> إضافة عميل جديد
                     </a>
                 </div>
