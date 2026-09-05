@@ -18,6 +18,15 @@
     @stack('styles')
 
     <style>
+        :root {
+            --primary-color: #0b5f8a;
+            --primary-dark: #094d70;
+            --primary-light: #3a9fd6;
+            --gradient-primary: linear-gradient(135deg, #0b5f8a, #3a9fd6);
+            --danger-color: #dc3545;
+            --border-color: #e5e7eb;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background: #f5f7fa;
