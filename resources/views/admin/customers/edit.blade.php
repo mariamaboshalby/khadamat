@@ -131,7 +131,7 @@
                     <i class="fa-solid fa-xmark me-2"></i>إلغاء
                 </a>
                 <button type="submit" 
-                        class="btn-primary rounded-3"
+                        class="btn btn-primary rounded-3"
                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px -4px rgba(16, 185, 129, 0.5)'"
                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 8px -2px rgba(16, 185, 129, 0.4)'">
                     <i class="fa-solid fa-floppy-disk me-2"></i>حفظ التغييرات

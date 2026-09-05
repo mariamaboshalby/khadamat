@@ -439,8 +439,8 @@
         @yield('content')
         <div class="text-center py-4" style="border-top: 1px solid var(--border-color);">
             <p class="mb-0 text-muted fs-6">
-                &copy; تم التطوير بكل ❤️ بواسطة
-                <strong class="text-primary">Urca Team</strong>
+                &copy; crafted by
+                <strong class="">Urca Team ❤️</strong>
             </p>
         </div>
 

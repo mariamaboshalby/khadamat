@@ -4,22 +4,25 @@
 @section('header_title', 'تعديل بيانات الفني')
 
 @section('content')
-<div style="max-width: 1000px; margin: 0 auto;">
-    <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h1 style="font-size: 28px; margin: 0 0 10px; color: #2d3748; font-weight: 700;">تعديل بيانات الفني</h1>
-            <p style="color: #718096; margin: 0;">تحديث بيانات الفني: {{ $technician->user->name ?? 'غير معروف' }}</p>
+            <h1 style="font-size: 32px; margin: 0 0 8px; color: #2d3748; font-weight: 700;">تعديل بيانات الفني</h1>
+            <p style="color: #718096; margin: 0; font-size: 16px;">تحديث بيانات الفني: {{ $technician->user->name ?? 'غير معروف' }}</p>
         </div>
-        <a href="{{ route('admin.techs.index') }}" class="btn btn-outline-secondary" >
+        <a href="{{ route('admin.techs.index') }}" 
+           style="background: white; border: 1px solid #e2e8f0; color: #4a5568; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+           onmouseover="this.style.background='#f7fafc'; this.style.transform='translateY(-1px)';"
+           onmouseout="this.style.background='white'; this.style.transform='translateY(0)';">
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7"/>
             </svg>
             عودة للقائمة
         </a>
     </div>
-
-    <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-        <div style="background: linear-gradient(135deg, #ff7373 0%, #0b5f8a 100%); padding: 24px; color: white;">
+    
+    <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 16px;">
+        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 32px; color: white;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">

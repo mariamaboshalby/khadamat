@@ -152,10 +152,14 @@
 
             .main-content {
                 margin-right: 0;
+                padding-inline: 12px;
+                padding-top: 85px;
             }
 
             .main-navbar {
                 right: 0;
+                padding: 0 12px;
+                height: 60px;
             }
 
             #sidebarToggle {
@@ -320,8 +324,8 @@
         @yield('content')
         <div class="text-center py-4" style="border-top: 1px solid var(--border-color);">
             <p class="mb-0 text-muted fs-6">
-                &copy; تم التطوير بكل ❤️ بواسطة
-                <strong class="text-primary">Urca Team</strong>
+                &copy; crafted by
+                <strong class="">Urca Team ❤️</strong>
             </p>
         </div>
     </div>
