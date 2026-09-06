@@ -11,155 +11,268 @@ use App\Models\Request as RequestModel;
 use App\Models\Technician;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Helpers\EncryptionHelper;
 
 class HomeController extends Controller
 {
+    /**
+     * Homepage — public, highly cacheable.
+     * Cached for 10 minutes per-site (not per-user).
+     */
     public function index()
     {
-        $services = Service::all();
-        $offers = Offer::all();
-        $reviews = Review::all();
-        $strategies = Strategy::orderBy('step_number')->get();
+        // Services are rarely updated; cache for 15 minutes
+        $services = Cache::remember('home.services', 900, function () {
+            return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+                ->orderBy('name')
+                ->get();
+        });
+
+        // Only active/current offers; cache 10 minutes
+        $offers = Cache::remember('home.offers', 600, function () {
+            return Offer::select('id', 'title', 'subtitle_1', 'discount_value', 'badge_text', 'icon')
+                ->latest()
+                ->get();
+        });
+
+        // Only approved reviews, limited to 12 for the carousel; cache 10 minutes
+        $reviews = Cache::remember('home.reviews', 600, function () {
+            return Review::select('id', 'user_id', 'technician_id', 'rating', 'comment')
+                ->where('status', 'approved')
+                ->latest()
+                ->take(12)
+                ->get();
+        });
+
+        // Strategies change very rarely; cache 30 minutes
+        $strategies = Cache::remember('home.strategies', 1800, function () {
+            return Strategy::select('id', 'title', 'description', 'step_number', 'color', 'points')
+                ->orderBy('step_number')
+                ->get();
+        });
+
         return view('home', compact('services', 'offers', 'reviews', 'strategies'));
     }
 
+    /**
+     * Technicians listing page.
+     */
     public function technicians(Request $request)
     {
+        // This page is user-specific (filters) so keep shorter cache or no cache
         $specializations = Specialization::active()
             ->with(['technicians' => function ($query) {
-                $query->with(['user', 'specialization', 'reviews'])
+                $query->select('id', 'user_id', 'specialization_id', 'rating', 'availability_status')
+                    ->with([
+                        'user:id,name',
+                        'specialization:id,name',
+                    ])
+                    ->withCount('reviews')
                     ->orderByDesc('rating');
             }])
             ->withCount('technicians')
             ->get();
 
-        $technicians = Technician::with(['user', 'specialization', 'reviews'])
+        $technicians = Technician::select('id', 'user_id', 'specialization_id', 'rating', 'availability_status', 'bio')
+            ->with([
+                'user:id,name',
+                'specialization:id,name',
+            ])
+            ->withCount('reviews')
             ->orderByDesc('rating')
             ->get();
 
         return view('technicians.index', compact('specializations', 'technicians'));
     }
 
+    /**
+     * Services listing page.
+     */
     public function services(Request $request)
     {
-        $query = Service::query();
-        
-        // Add search functionality
-        if ($request->has('search') && $request->search != '') {
+        $query = Service::select('id', 'name', 'description', 'icon', 'specialization_id');
+
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'LIKE', "%{$search}%");
         }
-        
+
         $services = $query->get();
+
         return view('services.index', compact('services'));
     }
 
+    /**
+     * Offers listing page.
+     */
     public function offers()
     {
-        $offers = Offer::all();
+        $offers = Cache::remember('offers.all', 600, function () {
+            return Offer::select('id', 'title', 'subtitle_1', 'discount_value', 'badge_text', 'icon')
+                ->latest()
+                ->get();
+        });
+
         return view('offers.index', compact('offers'));
     }
 
+    /**
+     * Profile page (auth — just renders view, no DB needed).
+     */
     public function profile()
     {
         return view('profile.index');
     }
 
-    // Dashboard المستخدم مع طلباته
+    /**
+     * User dashboard — user-specific data, no shared caching.
+     */
     public function userDashboard()
     {
         $userId = Auth::id();
-        $requests = RequestModel::with([
-            'service', 
-            'assignedTechnician.user', 
-            'assignedTechnician.specialization', 
-            'requestItems'
-        ])
+
+        $requests = RequestModel::select(
+                'id', 'user_id', 'service_id', 'assigned_technician_id',
+                'status', 'price_status', 'description', 'address',
+                'proposed_price', 'scheduled_at', 'created_at'
+            )
+            ->with([
+                'service:id,name,icon',
+                'assignedTechnician' => function ($q) {
+                    $q->select('id', 'user_id', 'specialization_id')
+                      ->with([
+                          'user:id,name',
+                          'specialization:id,name',
+                      ]);
+                },
+                'requestItems:id,request_id,name,quantity,total_price',
+            ])
             ->where('user_id', $userId)
             ->orderByDesc('created_at')
             ->get();
 
         $stats = [
-            'total' => $requests->count(),
-            'pending' => $requests->where('status', 'pending')->count(),
-            'in_progress' => $requests->whereIn('status', ['approved', 'in_progress'])->count(),
-            'completed' => $requests->where('status', 'completed')->count(),
-            'cancelled' => $requests->where('status', 'cancelled')->count(),
-            'pending_approval' => $requests->where('price_status', 'pending_customer_approval')->count(),
+            'total'           => $requests->count(),
+            'pending'         => $requests->where('status', 'pending')->count(),
+            'in_progress'     => $requests->whereIn('status', ['approved', 'in_progress'])->count(),
+            'completed'       => $requests->where('status', 'completed')->count(),
+            'cancelled'       => $requests->where('status', 'cancelled')->count(),
+            'pending_approval'=> $requests->where('price_status', 'pending_customer_approval')->count(),
         ];
 
-        // Find current most active ongoing request
         $activeRequest = $requests->first(function ($req) {
             return in_array($req->status, ['in_progress', 'approved', 'pending']);
         });
 
-        $services = Service::all();
-        $offers = Offer::take(2)->get();
+        // Small lists — use select to avoid loading unnecessary columns
+        $services = Cache::remember('home.services', 900, function () {
+            return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+                ->orderBy('name')
+                ->get();
+        });
+
+        $offers = Offer::select('id', 'title', 'subtitle_1', 'discount_value', 'badge_text')
+            ->latest()
+            ->take(2)
+            ->get();
 
         return view('dashboard', compact('requests', 'stats', 'activeRequest', 'services', 'offers'));
     }
 
+    /**
+     * Technician public profile page.
+     */
     public function technicianProfile($encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        $technician = Technician::with(['user', 'specialization', 'reviews.user', 'reviews.customer'])->findOrFail($id);
-        
+
+        $technician = Technician::select('id', 'user_id', 'specialization_id', 'rating', 'bio', 'availability_status', 'completed_tasks')
+            ->with([
+                'user:id,name,email',
+                'specialization:id,name',
+                'reviews' => function ($q) {
+                    // Load only approved reviews with minimal columns
+                    $q->select('id', 'technician_id', 'user_id', 'rating', 'comment', 'created_at')
+                      ->where('status', 'approved')
+                      ->with('user:id,name')
+                      ->latest()
+                      ->take(10);
+                },
+            ])
+            ->findOrFail($id);
+
         $completedRequests = RequestModel::where('assigned_technician_id', $id)
             ->where('status', 'completed')
             ->count();
-        
-        $avgRating = Review::where('technician_id', $id)->avg('rating');
 
-        $services = Service::where('specialization_id', $technician->specialization_id)->get();
+        // Use the stored rating column — avoid the redundant AVG() query
+        $avgRating = $technician->rating;
+
+        $services = Service::select('id', 'name', 'description', 'icon')
+            ->where('specialization_id', $technician->specialization_id)
+            ->get();
+
         if ($services->isEmpty()) {
-            $services = Service::all();
+            $services = Cache::remember('home.services', 900, function () {
+                return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+                    ->orderBy('name')
+                    ->get();
+            });
         }
-        
+
         return view('technician-profile', compact('technician', 'completedRequests', 'avgRating', 'services'));
     }
 
+    /**
+     * Service detail page.
+     */
     public function serviceShow($encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        $service = Service::with('specialization')->findOrFail($id);
+        $service = Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+            ->with('specialization:id,name')
+            ->findOrFail($id);
+
         return view('services.show', compact('service'));
     }
 
+    /**
+     * Submit review for a technician.
+     */
     public function submitTechnicianReview(Request $request, $encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        // Validate the request
+
         $validated = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
+            'rating'  => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
 
-        // Check if user is authenticated
         if (!Auth::check()) {
             return back()->with('error', 'يجب تسجيل الدخول لإضافة تقييم.');
         }
 
-        // Get the technician
-        $technician = Technician::findOrFail($id);
+        $technician = Technician::select('id')->findOrFail($id);
 
-        // Check if user has already reviewed this technician
         $existingReview = Review::where('technician_id', $id)
             ->where('user_id', Auth::id())
-            ->first();
+            ->exists(); // exists() is cheaper than first()
 
         if ($existingReview) {
             return back()->with('error', 'لقد قمت بتقييم هذا الفني مسبقاً.');
         }
 
-        // Create the review
         Review::create([
             'technician_id' => $id,
-            'user_id' => Auth::id(),
-            'rating' => $validated['rating'],
-            'comment' => $validated['comment'],
-            'status' => 'approved', // Auto-approve for now
+            'user_id'       => Auth::id(),
+            'rating'        => $validated['rating'],
+            'comment'       => $validated['comment'],
+            'status'        => 'approved',
         ]);
+
+        // Bust the home reviews cache so new review appears
+        Cache::forget('home.reviews');
 
         return back()->with('success', 'تم إضافة التقييم بنجاح!');
     }

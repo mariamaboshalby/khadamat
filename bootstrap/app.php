@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
+
+        // Append HTTP cache headers to all web responses
+        $middleware->appendToGroup('web', \App\Http\Middleware\HttpCacheHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

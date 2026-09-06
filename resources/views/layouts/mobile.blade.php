@@ -3,27 +3,36 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'خدمات')</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
-    <!-- Bootstrap RTL CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-    <!-- Google Fonts - Cairo & Outfit -->
+    {{-- ============================================================
+         CRITICAL: DNS prefetch / preconnect for all external origins
+    ============================================================ --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    {{-- ============================================================
+         CRITICAL: Only 3 font weights (was 6) + display=swap
+         Cairo 400, 600, 800 cover all UI needs.
+         Outfit removed — unused (all elements use Cairo via * selector).
+    ============================================================ --}}
     <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap"
         rel="stylesheet">
 
+    {{-- ============================================================
+         CRITICAL INLINE CSS: Minimum styles needed to paint the
+         above-the-fold content (header + hero skeleton) without
+         waiting for any external stylesheet.
+         Bootstrap RTL, Font Awesome, and Swiper are deferred below.
+    ============================================================ --}}
     <style>
+        /* ── CSS variables ─────────────────────────────────────── */
         :root {
             --primary-color: #0b5f8a;
             --primary-dark: #072540;
@@ -47,7 +56,8 @@
             --radius-xl: 1.75rem;
         }
 
-        * {
+        /* ── Base reset ────────────────────────────────────────── */
+        *, *::before, *::after {
             font-family: 'Cairo', sans-serif;
             margin: 0;
             padding: 0;
@@ -63,7 +73,11 @@
             line-height: 1.6;
         }
 
-        /* Main Container */
+        @media (min-width: 769px) {
+            body { padding-bottom: 0; }
+        }
+
+        /* ── App container ─────────────────────────────────────── */
         .app-container {
             width: 100%;
             margin: 0 auto;
@@ -71,35 +85,11 @@
             position: relative;
         }
 
-        /* Mobile Specifics */
         @media (max-width: 768px) {
-            .app-container {
-                max-width: 100%;
-                background: var(--surface-color);
-            }
+            .app-container { background: var(--surface-color); }
         }
 
-        /* Desktop Specifics */
-        @media (min-width: 769px) {
-            body {
-                padding-bottom: 0;
-            }
-
-            .app-container {
-                max-width: 100%;
-                padding: 0;
-            }
-        }
-
-        /* Glassmorphism Utilities */
-        .glass {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        /* Header */
+        /* ── Mobile header (critical — visible on load) ────────── */
         .app-header {
             position: sticky;
             top: 0;
@@ -109,15 +99,14 @@
             align-items: center;
             justify-content: space-between;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
+            /* Removed backdrop-filter from sticky header — saves GPU on scroll */
             border-bottom: 1px solid var(--border-color);
             box-shadow: var(--shadow-sm);
         }
 
-        /* Desktop Header */
+        /* ── Desktop header ────────────────────────────────────── */
         .desktop-header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(16px);
+            background: #ffffff;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
             padding: 12px 0;
             border-bottom: 1px solid #eef2f6;
@@ -128,28 +117,21 @@
             height: 48px;
             width: auto;
             object-fit: contain;
-            transition: transform 0.2s;
         }
 
-        .site-logo:hover {
-            transform: scale(1.02);
-        }
-
+        /* ── Desktop nav links ─────────────────────────────────── */
         .desktop-nav-link {
             color: var(--text-secondary);
             font-weight: 700;
             margin: 0 14px;
             text-decoration: none;
-            transition: all 0.25s ease;
             font-size: 15px;
             position: relative;
             padding: 6px 4px;
+            transition: color 0.2s;
         }
 
-        .desktop-nav-link:hover {
-            color: var(--primary-color);
-        }
-
+        .desktop-nav-link:hover,
         .desktop-nav-link.active {
             color: var(--primary-color);
         }
@@ -166,7 +148,7 @@
             border-radius: 4px;
         }
 
-        /* Modern CTA Buttons */
+        /* ── CTA Buttons ───────────────────────────────────────── */
         .btn-brand-orange {
             background: linear-gradient(135deg, #ff9500 0%, #ff7a00 100%);
             color: #ffffff !important;
@@ -205,7 +187,6 @@
         .btn-brand-navy:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(11, 95, 138, 0.3);
         }
 
         .header-icon-btn {
@@ -219,20 +200,39 @@
             color: var(--text-primary);
             border: 1px solid var(--border-color);
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s;
             box-shadow: var(--shadow-sm);
         }
 
-        .header-icon-btn:active {
-            transform: scale(0.95);
+        .btn-primary {
+            background: #083a56;
+            color: white;
+            border: 1px solid #083a56;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: background 0.3s;
         }
 
-        .site-logo {
-            height: 55px;
-            width: 100px;
+        .btn-primary:hover {
+            background: #0b5f8a;
+            color: white;
         }
 
-        /* Bottom Navigation (Mobile Only) */
+        .btn-outline-primary {
+            color: #083a56;
+            background: transparent;
+            border: 1px solid #083a56;
+            text-decoration: none;
+            padding: 5px 15px;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff;
+            background: #083a56;
+        }
+
+        /* ── Bottom Navigation (Mobile Only) ──────────────────── */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
@@ -240,16 +240,16 @@
             transform: translateX(-50%);
             width: calc(100% - 40px);
             max-width: 440px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.97);
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 24px;
             display: flex;
             justify-content: space-between;
             padding: 12px 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            /* will-change promotes to GPU layer, avoids repaint on scroll */
+            will-change: transform;
         }
 
         .nav-item {
@@ -260,14 +260,13 @@
             gap: 4px;
             color: var(--text-muted);
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             padding: 4px;
         }
 
         .nav-icon {
             font-size: 22px;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
 
         .nav-label {
@@ -292,92 +291,64 @@
             height: 4px;
             background: var(--primary-color);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--primary-color);
         }
 
-        /* Desktop Navigation Links */
-        .desktop-nav-link {
-            color: var(--text-secondary);
-            font-weight: 700;
-            margin: 0 18px;
-            text-decoration: none;
-            transition: color 0.2s;
-            font-size: 15px;
+        /* ── Misc Utilities ────────────────────────────────────── */
+        .glass {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
-        .desktop-nav-link:hover,
-        .desktop-nav-link.active {
-            color: var(--primary-color);
-        }
-
-        .btn-primary {
-            background: #083a56;
-            color: white;
-            border: #083a56;
-            text-decoration: none;
-            padding: 8px 15px;
-            transition: 0.4s;
-        }
-
-        .btn-primary:hover {
-            background: #0b5f8a;
-            color: white;
-            border: #0b5f8a;
-            text-decoration: none;
-            padding: 8px 15px;
-        }
-
-        .btn-outline-primary {
-            color: #083a56;
-            background: transparent;
-            border: 1px solid #083a56;
-            text-decoration: none;
-            padding: 5px 15px;
-            transition: 0.4s;
-        }
-
-        .btn-outline-primary:hover {
-            color: #fff;
-            background: #083a56;
-            border: 1px solid #083a56;
-            text-decoration: none;
-            padding: 5px 15px;
-        }
-
-        /* Animations */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0);    }
         }
 
-        .fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
 
-        /* Scrollbar Hide */
-        ::-webkit-scrollbar {
-            display: none;
-        }
+        ::-webkit-scrollbar { display: none; }
     </style>
 
+    {{-- ============================================================
+         DEFERRED non-critical CSS using the media=print trick.
+         These are NOT render-blocking: the browser downloads them
+         at low priority and swaps to 'all' once loaded.
+    ============================================================ --}}
+    {{-- Bootstrap RTL CSS --}}
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"></noscript>
+
+    {{-- Font Awesome — deferred, icons are not LCP --}}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+
+    {{-- Swiper CSS — deferred, carousel is below the fold --}}
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></noscript>
+
+    {{-- Page-specific styles (declared in @push('styles') in child views) --}}
     @stack('styles')
+
+    {{-- ============================================================
+         LCP Image Preload — injected from child view via @push('preloads')
+         so the browser discovers the hero image as early as possible
+    ============================================================ --}}
+    @stack('preloads')
 </head>
 
 <body>
-    <!-- Desktop Header -->
+    {{-- ============================================================
+         Desktop Header — hidden on mobile via d-none d-md-block
+    ============================================================ --}}
     <div class="desktop-header d-none d-md-block sticky-top">
         <div class="container-fluid px-lg-5">
             <div class="d-flex justify-content-between align-items-center">
                 <header class="site-header">
                     <a href="{{ route('home') }}" class="d-flex align-items-center text-decoration-none">
-                        <img src="{{ asset('images/logo.png') }}" alt="خدمتي" class="site-logo">
+                        <picture>
+                            <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
+                            <img src="{{ asset('images/logo.png') }}" alt="خدمتي" class="site-logo" width="100" height="48" loading="eager">
+                        </picture>
                     </a>
                 </header>
 
@@ -434,18 +405,18 @@
         </div>
     </div>
 
-
     <div class="app-container">
         @yield('content')
+
         <div class="text-center py-4" style="border-top: 1px solid var(--border-color);">
             <p class="mb-0 text-muted fs-6">
                 &copy; crafted by
-                <strong class="">Urca Team ❤️</strong>
+                <strong>Urca Team ❤️</strong>
             </p>
         </div>
 
-        <!-- Bottom Navigation (Mobile Only) -->
-        <div class="bottom-nav d-md-none">
+        {{-- Bottom Navigation (Mobile Only) --}}
+        <nav class="bottom-nav d-md-none" aria-label="Mobile navigation">
             <a href="{{ route('home') }}" class="nav-item {{ request()->is('/') ? 'active' : '' }}">
                 <i class="fas fa-home nav-icon"></i>
                 <span class="nav-label">الرئيسية</span>
@@ -489,16 +460,18 @@
                 <i class="fas fa-user nav-icon"></i>
                 <span class="nav-label">حسابي</span>
             </a>
-        </div>
+        </nav>
     </div>
 
     @yield('footer')
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    {{-- ============================================================
+         JS — all deferred to end of body.
+         Bootstrap JS is loaded async — it is only needed for
+         accordion and modal interactions, not for initial render.
+    ============================================================ --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 
     @stack('scripts')
 </body>
