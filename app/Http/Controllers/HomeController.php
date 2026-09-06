@@ -23,15 +23,16 @@ class HomeController extends Controller
     public function index()
     {
         // Services are rarely updated; cache for 15 minutes
+        // NOTE: services table has no 'description' column — select only existing columns
         $services = Cache::remember('home.services', 900, function () {
-            return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+            return Service::select('id', 'name', 'icon', 'color_class', 'specialization_id')
                 ->orderBy('name')
                 ->get();
         });
 
         // Only active/current offers; cache 10 minutes
         $offers = Cache::remember('home.offers', 600, function () {
-            return Offer::select('id', 'title', 'subtitle_1', 'discount_value', 'badge_text', 'icon')
+            return Offer::select('id', 'title', 'subtitle_1', 'subtitle_2', 'discount_value', 'discount_label', 'badge_text', 'icon', 'gradient_class')
                 ->latest()
                 ->get();
         });
@@ -91,7 +92,7 @@ class HomeController extends Controller
      */
     public function services(Request $request)
     {
-        $query = Service::select('id', 'name', 'description', 'icon', 'specialization_id');
+        $query = Service::select('id', 'name', 'icon', 'color_class', 'specialization_id');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -167,7 +168,7 @@ class HomeController extends Controller
 
         // Small lists — use select to avoid loading unnecessary columns
         $services = Cache::remember('home.services', 900, function () {
-            return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+            return Service::select('id', 'name', 'icon', 'color_class', 'specialization_id')
                 ->orderBy('name')
                 ->get();
         });
@@ -209,13 +210,13 @@ class HomeController extends Controller
         // Use the stored rating column — avoid the redundant AVG() query
         $avgRating = $technician->rating;
 
-        $services = Service::select('id', 'name', 'description', 'icon')
+        $services = Service::select('id', 'name', 'icon', 'color_class')
             ->where('specialization_id', $technician->specialization_id)
             ->get();
 
         if ($services->isEmpty()) {
             $services = Cache::remember('home.services', 900, function () {
-                return Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+                return Service::select('id', 'name', 'icon', 'color_class', 'specialization_id')
                     ->orderBy('name')
                     ->get();
             });
@@ -230,7 +231,7 @@ class HomeController extends Controller
     public function serviceShow($encryptedId)
     {
         $id = EncryptionHelper::decryptId($encryptedId);
-        $service = Service::select('id', 'name', 'description', 'icon', 'specialization_id')
+        $service = Service::select('id', 'name', 'icon', 'color_class', 'specialization_id')
             ->with('specialization:id,name')
             ->findOrFail($id);
 
