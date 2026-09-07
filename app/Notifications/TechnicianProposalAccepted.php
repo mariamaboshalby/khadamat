@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\RequestProposal;
+use App\Helpers\EncryptionHelper;
 
 class TechnicianProposalAccepted extends Notification
 {
@@ -45,6 +46,8 @@ class TechnicianProposalAccepted extends Notification
             'service_name' => $this->proposal->request->service->name,
             'proposal_id' => $this->proposal->id,
             'created_at' => $this->proposal->created_at,
+            'action_url' => route('technician.repair-requests.show', EncryptionHelper::encryptId($this->proposal->request->id)),
+            'icon' => 'fa-check-circle',
         ];
     }
 }

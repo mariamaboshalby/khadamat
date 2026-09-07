@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Request;
+use App\Helpers\EncryptionHelper;
 
 class CustomerRequestSubmitted extends Notification
 {
@@ -44,6 +45,8 @@ class CustomerRequestSubmitted extends Notification
             'request_id' => $this->request->id,
             'service_name' => $this->request->service->name,
             'created_at' => $this->request->created_at,
+            'action_url' => route('requests.show', EncryptionHelper::encryptId($this->request->id)),
+            'icon' => 'fa-paper-plane',
         ];
     }
 }

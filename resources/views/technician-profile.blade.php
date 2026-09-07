@@ -25,9 +25,11 @@
                 <!-- 1. About Technician (نبذة عن الفني) -->
                 <div class="tech-card-box p-4 p-md-4 mb-4">
                     <h3 class="section-sub-title mb-3">نبذة عن الفني</h3>
-                    <p class="tech-bio-text mb-0">
-                        {{ $technician->bio ?: ($technician->user?->name ?? 'الفني') . ' فني معتمد ذو خبرة واسعة في مجال الصيانة العامة والإصلاحات المنزلية. يمتلك مهارات استثنائية في تشخيص الأعطال وحلها بكفاءة عالية. يتميز بالدقة في المواعيد والالتزام بأعلى معايير الجودة والسلامة في جميع الأعمال التي يقوم بها. يسعى دائماً لتقديم أفضل تجربة للعملاء وضمان رضاهم التام.' }}
-                    </p>
+                    @if(!empty($technician->bio))
+                        <p class="tech-bio-text mb-0">{{ $technician->bio }}</p>
+                    @else
+                        <p class="tech-bio-text text-muted fst-italic mb-0">لم يتم إضافة نبذة تعريفية بعد.</p>
+                    @endif
                 </div>
 
                 <!-- 2. Available Services (الخدمات المتاحة) -->
@@ -175,7 +177,17 @@
                 <div class="tech-profile-card">
                     <div class="tech-profile-header-gradient text-center">
                         <div class="tech-avatar-circle-wrapper">
-                            <img src="{{ asset('images/tech-avatar.jpg') }}" alt="{{ $technician->user?->name ?? $technician->full_name }}" class="tech-avatar-img-circle">
+                            @php $techPhoto = $technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar'); @endphp
+                            @if(!empty($techPhoto))
+                                <img src="{{ $techPhoto }}"
+                                     alt="{{ $technician->user?->name ?? $technician->full_name }}"
+                                     class="tech-avatar-img-circle"
+                                     loading="lazy">
+                            @else
+                                <div class="tech-avatar-icon-placeholder tech-avatar-icon-circle">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                            @endif
                             <div class="tech-verified-check-badge" title="فني معتمد وموثق 100%">
                                 <i class="fas fa-check"></i>
                             </div>
@@ -222,24 +234,22 @@
                 </div>
 
                 <!-- Service Areas Card (مناطق الخدمة) -->
+                <!-- Service Areas Card (مناطق الخدمة) -->
+                @if(!empty($serviceAreas))
                 <div class="tech-service-areas-box p-4 mt-4">
                     <h5 class="service-areas-heading mb-3">
                         <i class="fas fa-map-marker-alt text-dark me-1"></i>
                         <span>مناطق الخدمة</span>
                     </h5>
                     <div class="d-flex flex-wrap gap-2">
-                        @php
-                            $rawAddress = $technician->address ?: 'الرياض، جدة';
-                            $areas = array_filter(array_map('trim', explode('،', str_replace(',', '،', $rawAddress))));
-                            if (empty($areas)) {
-                                $areas = ['الرياض', 'جدة'];
-                            }
-                        @endphp
-                        @foreach($areas as $area)
-                            <span class="service-area-pill">{{ $area }}</span>
+                        @foreach($serviceAreas as $area)
+                            <span class="service-area-pill">
+                                <i class="fas fa-location-dot me-1" style="font-size:11px;"></i>{{ $area }}
+                            </span>
                         @endforeach
                     </div>
                 </div>
+                @endif
 
             </div>
 
@@ -488,6 +498,24 @@
         border: 4px solid #ffffff;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         background: #f1f5f9;
+    }
+
+    /* Placeholder icon when technician has no photo */
+    .tech-avatar-icon-placeholder.tech-avatar-icon-circle {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 4px solid #ffffff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .tech-avatar-icon-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e8f0fe 0%, #d0dff8 100%);
+        color: #5a7fbf;
+        font-size: 52px;
     }
 
     .tech-verified-check-badge {

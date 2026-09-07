@@ -115,8 +115,80 @@ class HomeController extends Controller
         if ($services->isEmpty()) {
             $services = Service::all();
         }
-        
-        return view('technician-profile', compact('technician', 'completedRequests', 'avgRating', 'services'));
+
+        // Build service areas from location data
+        $serviceAreas = $this->resolveServiceAreas($technician);
+
+        return view('technician-profile', compact('technician', 'completedRequests', 'avgRating', 'services', 'serviceAreas'));
+    }
+
+    /**
+     * Resolve service areas for a technician.
+     * Priority: lat/lng → reverse geocode via Nominatim → fallback to address field.
+     */
+    private function resolveServiceAreas(Technician $technician): array
+    {
+        // 1. Try reverse geocoding if coordinates are available
+        if (!empty($technician->latitude) && !empty($technician->longitude)) {
+            try {
+                $lat = (float) $technician->latitude;
+                $lng = (float) $technician->longitude;
+
+                $url = sprintf(
+                    'https://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s&zoom=10&accept-language=ar',
+                    $lat,
+                    $lng
+                );
+
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout'       => 4,
+                        'user_agent'    => 'KhadamatApp/1.0 (maintenance service platform)',
+                        'ignore_errors' => true,
+                    ],
+                ]);
+
+                $response = @file_get_contents($url, false, $ctx);
+
+                if ($response !== false) {
+                    $data = json_decode($response, true);
+
+                    if (!empty($data['address'])) {
+                        $addr    = $data['address'];
+                        $areas   = [];
+
+                        // Collect the most useful address components (suburb → city → state)
+                        foreach (['suburb', 'neighbourhood', 'quarter', 'city_district', 'district', 'county', 'city', 'town', 'village', 'state'] as $key) {
+                            if (!empty($addr[$key])) {
+                                $areas[] = $addr[$key];
+                            }
+                            if (count($areas) >= 3) {
+                                break;
+                            }
+                        }
+
+                        if (!empty($areas)) {
+                            return array_unique($areas);
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Geocoding failed silently — fall through to address fallback
+            }
+        }
+
+        // 2. Fallback: parse the address text field
+        if (!empty($technician->address)) {
+            $parts = array_filter(
+                array_map('trim', preg_split('/[،,\/\-]+/u', $technician->address))
+            );
+            if (!empty($parts)) {
+                return array_values(array_unique(array_slice($parts, 0, 3)));
+            }
+        }
+
+        // 3. Nothing available
+        return [];
     }
 
     public function serviceShow($encryptedId)

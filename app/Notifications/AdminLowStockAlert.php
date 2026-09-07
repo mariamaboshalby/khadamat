@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\WarehouseItem;
+use App\Helpers\EncryptionHelper;
 
 class AdminLowStockAlert extends Notification
 {
@@ -46,6 +47,8 @@ class AdminLowStockAlert extends Notification
             'current_quantity' => $this->item->quantity,
             'min_quantity' => $this->item->min_quantity,
             'created_at' => now(),
+            'action_url' => route('admin.warehouse-items.edit', EncryptionHelper::encryptId($this->item->id)),
+            'icon' => 'fa-boxes',
         ];
     }
 }
