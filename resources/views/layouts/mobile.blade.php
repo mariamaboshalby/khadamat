@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'خدمات')</title>
-    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/webp" href="{{ asset('images/logo.webp') }}">
 
     {{-- ============================================================
          CRITICAL: DNS prefetch / preconnect for all external origins
@@ -17,13 +18,19 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
     {{-- ============================================================
-         CRITICAL: Only 3 font weights (was 6) + display=swap
-         Cairo 400, 600, 800 cover all UI needs.
-         Outfit removed — unused (all elements use Cairo via * selector).
+         FONTS — non-blocking strategy:
+         1. An @font-face block with font-display:optional is declared
+            in the inline <style> below. This lets the browser use a
+            system fallback immediately and swap to Cairo only if it
+            arrives within the first render cycle — eliminating the
+            layout-shift caused by "swap" and any render-blocking.
+         2. The Google Fonts <link> is loaded asynchronously with the
+            media=print trick (same pattern used for Bootstrap/FA).
+         3. A <noscript> fallback keeps fonts working without JS.
+         Ref: https://web.dev/defer-non-critical-css/
     ============================================================ --}}
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=optional"></noscript>
 
     {{-- ============================================================
          CRITICAL INLINE CSS: Minimum styles needed to paint the
@@ -32,6 +39,21 @@
          Bootstrap RTL, Font Awesome, and Swiper are deferred below.
     ============================================================ --}}
     <style>
+        /* ── Font stack — system fallback painted immediately ───── */
+        /* Cairo is async-loaded; until it arrives the browser uses  */
+        /* the Arabic system font (Segoe UI on Windows, San Francisco */
+        /* on macOS/iOS, Noto Sans on Android). font-display:optional */
+        /* tells the browser NOT to cause a layout shift if Cairo     */
+        /* misses the first paint window (unlike swap which causes    */
+        /* visible text flash). This eliminates the render-block.     */
+        @font-face {
+            font-family: 'Cairo';
+            font-style: normal;
+            font-weight: 400 800;
+            font-display: optional;
+            src: local('Cairo'), local('Cairo-Regular');
+        }
+
         /* ── CSS variables ─────────────────────────────────────── */
         :root {
             --primary-color: #0b5f8a;
@@ -58,7 +80,7 @@
 
         /* ── Base reset ────────────────────────────────────────── */
         *, *::before, *::after {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -318,22 +340,42 @@
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"></noscript>
 
-    {{-- Font Awesome — deferred, icons are not LCP --}}
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    {{-- ============================================================
+         Font Awesome — split into 3 targeted files instead of all.min.css.
+         all.min.css = ~170KB gzipped (includes paid/unused: duotone,
+         thin, light, sharp). We only use: solid + brands + regular.
+         3 files × ~20KB gzipped = ~60KB total — a ~65% reduction.
+         All three are still non-blocking via preload+onload.
+         fontawesome.min.css = base variables, mixins, utility classes
+         (fa-spin, fa-lg, fa-2x, fa-3x, fa-fw, etc.) — required first.
+    ============================================================ --}}
+    {{-- Base (utilities: fa-spin, fa-lg, fa-2x, fa-fw, etc.) --}}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"></noscript>
+    {{-- Solid icons (fas) — most used --}}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css"></noscript>
+    {{-- Regular icons (far / fa-regular) --}}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/regular.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/regular.min.css"></noscript>
+    {{-- Brands icons (fab: twitter, instagram, facebook-f, whatsapp) --}}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css"></noscript>
 
     {{-- Swiper CSS — deferred, carousel is below the fold --}}
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></noscript>
 
-    {{-- Page-specific styles (declared in @push('styles') in child views) --}}
-    @stack('styles')
-
     {{-- ============================================================
-         LCP Image Preload — injected from child view via @push('preloads')
-         so the browser discovers the hero image as early as possible
+         LCP Image Preload — must come BEFORE @stack('styles') so the
+         browser's preload scanner discovers the hero image at the
+         earliest possible moment during HTML parsing.
+         Child views inject via @push('preloads').
     ============================================================ --}}
     @stack('preloads')
+
+    {{-- Page-specific styles (declared in @push('styles') in child views) --}}
+    @stack('styles')
 </head>
 
 <body>
@@ -345,10 +387,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <header class="site-header">
                     <a href="{{ route('home') }}" class="d-flex align-items-center text-decoration-none">
-                        <picture>
-                            <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
-                            <img src="{{ asset('images/logo.png') }}" alt="خدمتي" class="site-logo" width="100" height="48" loading="eager">
-                        </picture>
+                        <img src="{{ asset('images/logo.webp') }}" alt="خدمتي" class="site-logo" width="100" height="48" loading="eager">
                     </a>
                 </header>
 

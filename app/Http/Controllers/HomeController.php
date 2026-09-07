@@ -40,6 +40,7 @@ class HomeController extends Controller
         // Only approved reviews, limited to 12 for the carousel; cache 10 minutes
         $reviews = Cache::remember('home.reviews', 600, function () {
             return Review::select('id', 'user_id', 'technician_id', 'rating', 'comment')
+                ->with('user:id,name')   // eager-load to prevent N+1 in getUserNameAttribute
                 ->where('status', 'approved')
                 ->latest()
                 ->take(12)

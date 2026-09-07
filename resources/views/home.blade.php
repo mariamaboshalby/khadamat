@@ -10,18 +10,31 @@
      gets the smaller image (hero-bg-mobile.webp / .jpg).
 ================================================================ --}}
 @push('preloads')
-    {{-- Mobile: preload small WebP hero --}}
+    {{-- ============================================================
+         LCP IMAGE PRELOAD — emitted into <head> before @stack('styles').
+         Browser spec: <link rel="preload" as="image"> with imagesrcset
+         + imagesizes is the Responsive Image Preload (RIP) spec.
+         imagesizes is REQUIRED when imagesrcset is used — without it
+         the preload is treated as invalid and ignored by Chromium.
+         fetchpriority="high" tells the browser to assign the highest
+         network priority to this fetch.
+    ============================================================ --}}
+    {{-- Mobile: preload small WebP hero (≤768px screens) --}}
     <link rel="preload" as="image"
           href="{{ asset('images/hero-bg-mobile.webp') }}"
           imagesrcset="{{ asset('images/hero-bg-mobile.webp') }}"
+          imagesizes="100vw"
           media="(max-width: 768px)"
-          type="image/webp">
-    {{-- Desktop: preload full WebP hero --}}
+          type="image/webp"
+          fetchpriority="high">
+    {{-- Desktop: preload full WebP hero (≥769px screens) --}}
     <link rel="preload" as="image"
           href="{{ asset('images/hero-bg.webp') }}"
           imagesrcset="{{ asset('images/hero-bg.webp') }}"
+          imagesizes="100vw"
           media="(min-width: 769px)"
-          type="image/webp">
+          type="image/webp"
+          fetchpriority="high">
 @endpush
 
 @section('content')
@@ -31,12 +44,9 @@
     <div class="app-header d-md-none">
         <div class="d-flex align-items-center gap-2">
             <a href="{{ route('home') }}">
-                <picture>
-                    <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
-                    <img src="{{ asset('images/logo.png') }}" alt="خدمتي"
-                         style="height: 38px; width: auto;" width="80" height="38"
-                         loading="eager" decoding="sync">
-                </picture>
+                <img src="{{ asset('images/logo.webp') }}" alt="خدمتي"
+                     style="height: 38px; width: auto;" width="80" height="38"
+                     loading="eager" decoding="sync">
             </a>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -77,14 +87,11 @@
                 srcset="{{ asset('images/hero-bg-mobile.webp') }}"
                 type="image/webp">
             <source
-                media="(max-width: 768px)"
-                srcset="{{ asset('images/hero-bg-mobile.jpg') }}">
-            <source
                 media="(min-width: 769px)"
                 srcset="{{ asset('images/hero-bg.webp') }}"
                 type="image/webp">
             <img
-                src="{{ asset('images/hero-bg.jpg') }}"
+                src="{{ asset('images/hero-bg.webp') }}"
                 alt=""
                 class="hero-bg-img"
                 width="1440"
@@ -520,13 +527,10 @@
             <div class="row g-5 mb-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand mb-3">
-                        <picture>
-                            <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
-                            <img src="{{ asset('images/logo.png') }}" alt="خدمتي"
-                                 style="height: 48px; width: auto;"
-                                 width="100" height="48"
-                                 loading="lazy" decoding="async">
-                        </picture>
+                        <img src="{{ asset('images/logo.webp') }}" alt="خدمتي"
+                             style="height: 48px; width: auto;"
+                             width="100" height="48"
+                             loading="lazy" decoding="async">
                     </div>
                     <p class="text-secondary fs-6 mb-4">
                         منصتك الأولى المعتمدة لخدمات الصيانة والتشغيل المنزلي. نربطك بأفضل الفنيين المحترفين لضمان جودة العمل، راحة البال، وتوفير الوقت.
@@ -632,6 +636,9 @@
         padding: 90px 20px 80px;
         border-radius: 0 0 32px 32px;
         box-shadow: 0 15px 35px -10px rgba(8, 29, 51, 0.3);
+        /* Explicit contain prevents browser from needing to re-layout
+           surrounding content when the hero image loads. */
+        contain: layout style;
     }
 
     /* Hero background image as <img> — absolutely positioned to fill */
@@ -809,7 +816,14 @@
     .service-card-desc  { font-size: 13.5px; line-height: 1.6; color: #64748b; margin-bottom: 0; }
 
     /* ── HOW IT WORKS ──────────────────────────────────────────── */
-    .how-it-works-bg { background: #fbfcfe; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+    .how-it-works-bg {
+        background: #fbfcfe;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        /* Defer rendering of this below-fold section until near viewport */
+        content-visibility: auto;
+        contain-intrinsic-size: 0 400px;
+    }
     .stepper-container { position: relative; padding: 20px 0; }
     .stepper-line {
         position: absolute; top: 45px; left: 12%; right: 12%;
