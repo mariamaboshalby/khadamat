@@ -435,6 +435,28 @@
     </div>
 
 
+    <!-- Mobile Header (Mobile Only) -->
+    <div class="app-header d-md-none">
+        <a href="{{ route('home') }}">
+            <img src="{{ asset('images/logo.png') }}" alt="خدمات" class="site-logo">
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            @auth
+                <a href="{{ route('notifications.index') }}" class="header-icon-btn position-relative" title="الإشعارات">
+                    <i class="fas fa-bell fs-5"></i>
+                    @php $unreadCount = auth()->user()->unreadNotifications()->count(); @endphp
+                    @if ($unreadCount > 0)
+                        <span id="notification-badge"
+                            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 10px; min-width: 18px; padding: 3px 5px;">
+                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                        </span>
+                    @endif
+                </a>
+            @endauth
+        </div>
+    </div>
+
     <div class="app-container">
         @yield('content')
         <div class="text-center py-4" style="border-top: 1px solid var(--border-color);">

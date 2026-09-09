@@ -134,7 +134,7 @@
         /* Content */
         .main-content {
             margin-right: 280px;
-            padding-top: 100px;
+            padding-top: 80px;
             padding-inline: 30px;
             transition: 0.3s;
             min-height: 100vh;
@@ -162,7 +162,7 @@
             .main-content {
                 margin-right: 0;
                 padding-inline: 12px;
-                padding-top: 85px;
+                padding-top: 68px;
             }
 
             .main-navbar {
