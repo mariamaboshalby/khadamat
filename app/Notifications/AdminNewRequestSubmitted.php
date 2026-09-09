@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Request;
+use App\Helpers\EncryptionHelper;
 
 class AdminNewRequestSubmitted extends Notification
 {
@@ -45,6 +46,8 @@ class AdminNewRequestSubmitted extends Notification
             'customer_name' => $this->request->user->name,
             'service_name' => $this->request->service->name,
             'created_at' => $this->request->created_at,
+            'action_url' => route('admin.requests.show', EncryptionHelper::encryptId($this->request->id)),
+            'icon' => 'fa-clipboard-list',
         ];
     }
 }

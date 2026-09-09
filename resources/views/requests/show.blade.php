@@ -174,10 +174,16 @@
                             <div class="tech-pattern-banner"></div>
                             <div class="tech-card-body text-center px-4 pb-4">
                                 <div class="tech-avatar-wrapper mx-auto mb-3">
-                                    @if($requestData->assignedTechnician->user->avatar)
-                                        <img src="{{ asset('storage/' . $requestData->assignedTechnician->user->avatar) }}" alt="Technician" class="tech-avatar-img">
+                                    @php $techPhoto = $requestData->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $requestData->assignedTechnician->getFirstMediaUrl('avatar'); @endphp
+                                    @if(!empty($techPhoto))
+                                        <img src="{{ $techPhoto }}"
+                                             alt="{{ $requestData->assignedTechnician->user->name }}"
+                                             class="tech-avatar-img"
+                                             loading="lazy">
                                     @else
-                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($requestData->assignedTechnician->user->name) }}&background=072540&color=fff&size=128" alt="Technician" class="tech-avatar-img">
+                                        <div class="tech-avatar-icon-placeholder">
+                                            <i class="fas fa-user-tie"></i>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -748,6 +754,18 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Placeholder icon when technician has no photo */
+        .tech-avatar-icon-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e8f0fe 0%, #d0dff8 100%);
+            color: #5a7fbf;
+            font-size: 34px;
         }
 
         .tech-specialization {

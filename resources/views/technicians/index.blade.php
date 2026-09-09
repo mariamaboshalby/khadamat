@@ -472,6 +472,23 @@
         transform: scale(1.05);
     }
 
+    /* Placeholder icon when technician has no photo */
+    .tech-avatar-icon-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e8f0fe 0%, #d0dff8 100%);
+        color: #5a7fbf;
+        font-size: 60px;
+        transition: transform 0.4s ease;
+    }
+
+    .technician-card-box:hover .tech-avatar-icon-placeholder {
+        transform: scale(1.05);
+    }
+
     .tech-rating-pill {
         position: absolute;
         bottom: 12px;

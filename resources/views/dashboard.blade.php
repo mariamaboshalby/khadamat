@@ -227,7 +227,7 @@
             @endif
 
             <!-- Quick Service Booking Carousel/Grid -->
-            @if(isset($services) && $services->count() > 0)
+            {{-- @if(isset($services) && $services->count() > 0)
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
@@ -253,7 +253,7 @@
                         @endforeach
                     </div>
                 </div>
-            @endif
+            @endif --}}
 
             <!-- Requests Management Section -->
             <div class="requests-section">

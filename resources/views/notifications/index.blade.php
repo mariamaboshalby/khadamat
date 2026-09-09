@@ -36,7 +36,11 @@
         @else
             <div class="notifications-list pb-5">
                 @foreach ($notifications as $notification)
-                    <div class="notification-card {{ $notification->read_at ? 'read' : 'unread' }} mb-3 fade-in">
+                    <div class="notification-card {{ $notification->read_at ? 'read' : 'unread' }} mb-3 fade-in"
+                        @if(isset($notification->data['action_url'])) 
+                            data-url="{{ $notification->data['action_url'] }}" 
+                            style="cursor: pointer;"
+                        @endif>
                         <div class="d-flex align-items-start p-3">
                             <div class="flex-shrink-0 ms-3">
                                 <div
@@ -169,6 +173,12 @@
                 transform: scale(0.98);
                 opacity: 0.7;
             }
+
+            /* Clickable card hover effect */
+            .notification-card[data-url]:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            }
         </style>
     @endpush
 
@@ -187,6 +197,33 @@
                         if (newCount === 0) badge.style.display = 'none';
                     }
                 }
+
+                // Click on card → navigate to action_url (mark as read first if unread)
+                document.querySelectorAll('.notification-card[data-url]').forEach(card => {
+                    card.addEventListener('click', function(e) {
+                        // Don't trigger if clicking the mark-as-read button
+                        if (e.target.closest('.mark-as-read')) return;
+
+                        const url = this.getAttribute('data-url');
+                        const notificationId = this.querySelector('.mark-as-read')?.getAttribute('data-id');
+
+                        // If unread, mark as read silently then navigate
+                        if (this.classList.contains('unread') && notificationId) {
+                            fetch(`/notifications/${notificationId}/read`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                            }).finally(() => {
+                                window.location.href = url;
+                            });
+                        } else {
+                            window.location.href = url;
+                        }
+                    });
+                });
 
                 // Mark single notification as read (Optimistic UI)
                 document.querySelectorAll('.mark-as-read').forEach(button => {

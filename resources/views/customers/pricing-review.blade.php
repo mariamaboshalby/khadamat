@@ -18,7 +18,17 @@
         <h4 class="mb-3">عرض سعر من الفني</h4>
         <div class="technician-info">
             <div class="d-flex align-items-center gap-3">
-                <div class="tech-avatar">{{ substr($request->assignedTechnician->user->name, 0, 1) }}</div>
+                @php $techPhoto = $request->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $request->assignedTechnician->getFirstMediaUrl('avatar'); @endphp
+                @if(!empty($techPhoto))
+                    <img src="{{ $techPhoto }}"
+                         alt="{{ $request->assignedTechnician->user->name }}"
+                         class="tech-avatar tech-avatar-img"
+                         loading="lazy">
+                @else
+                    <div class="tech-avatar tech-avatar-placeholder">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                @endif
                 <div>
                     <div class="tech-name">{{ $request->assignedTechnician->user->name }}</div>
                     <div class="tech-rating">
@@ -142,6 +152,20 @@
     justify-content: center;
     font-weight: 700;
     font-size: 24px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.tech-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tech-avatar-placeholder {
+    background: linear-gradient(135deg, #e8f0fe 0%, #d0dff8 100%);
+    color: #5a7fbf;
+    font-size: 22px;
 }
 
 .tech-name {

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Technician;
+use App\Helpers\EncryptionHelper;
 
 class AdminNewTechnicianSelected extends Notification
 {
@@ -45,6 +46,8 @@ class AdminNewTechnicianSelected extends Notification
             'technician_name' => $this->technician->user->name,
             'specialization' => $this->technician->specialization->name ?? 'غير محدد',
             'created_at' => $this->technician->created_at,
+            'action_url' => route('admin.techs.show', EncryptionHelper::encryptId($this->technician->id)),
+            'icon' => 'fa-user-hard-hat',
         ];
     }
 }

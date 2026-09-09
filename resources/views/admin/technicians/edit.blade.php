@@ -36,9 +36,62 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('admin.techs.update', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" style="padding: 32px;">
+        <form method="POST" action="{{ route('admin.techs.update', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" style="padding: 32px;" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            {{-- Photo Section --}}
+            <div style="margin-bottom: 32px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <span style="color: #667eea;">00.</span> صورة الفني
+                </h4>
+
+                @php $currentPhoto = $technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar'); @endphp
+
+                <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                    {{-- Current / Preview --}}
+                    <div id="photoPreviewWrap" style="width: 110px; height: 110px; border-radius: 50%; border: 3px {{ $currentPhoto ? 'solid #10b981' : 'dashed #cbd5e0' }}; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; position: relative;">
+                        @if($currentPhoto)
+                            <img id="photoPreview" src="{{ $currentPhoto }}" alt="صورة الفني" style="width: 100%; height: 100%; object-fit: cover;">
+                        @else
+                            <img id="photoPreview" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <svg id="photoPlaceholderIcon" width="44" height="44" fill="none" stroke="#a0aec0" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        @endif
+                    </div>
+
+                    <div style="flex: 1; min-width: 200px;">
+                        {{-- Upload new --}}
+                        <label for="photo" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(16,185,129,0.08); border: 2px dashed #10b981; color: #10b981; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s;"
+                               onmouseover="this.style.background='rgba(16,185,129,0.15)'"
+                               onmouseout="this.style.background='rgba(16,185,129,0.08)'">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            {{ $currentPhoto ? 'استبدال الصورة' : 'اختر صورة' }}
+                        </label>
+                        <input type="file" id="photo" name="photo" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
+                        <p style="margin: 8px 0 0; font-size: 12px; color: #a0aec0;">JPEG, PNG, WebP — حد أقصى 2 ميجابايت</p>
+
+                        {{-- Remove current photo --}}
+                        @if($currentPhoto)
+                        <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="remove_photo" name="remove_photo" value="1"
+                                   style="width: 16px; height: 16px; accent-color: #e53e3e; cursor: pointer;"
+                                   onchange="toggleRemovePhoto(this)">
+                            <label for="remove_photo" style="font-size: 13px; color: #e53e3e; cursor: pointer; font-weight: 600;">
+                                حذف الصورة الحالية
+                            </label>
+                        </div>
+                        @endif
+
+                        @error('photo')
+                            <p style="color: #e53e3e; font-size: 13px; margin-top: 6px;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
             {{-- Personal Info Section --}}
             <div style="margin-bottom: 32px;">
@@ -488,6 +541,38 @@ input, textarea, select {
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+// Photo preview & remove toggle
+function previewPhoto(input) {
+    const preview = document.getElementById('photoPreview');
+    const icon    = document.getElementById('photoPlaceholderIcon');
+    const wrap    = document.getElementById('photoPreviewWrap');
+    const removeChk = document.getElementById('remove_photo');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            if (icon) icon.style.display = 'none';
+            wrap.style.border = '3px solid #10b981';
+            // Uncheck remove if user picked a new file
+            if (removeChk) { removeChk.checked = false; wrap.style.opacity = '1'; }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function toggleRemovePhoto(checkbox) {
+    const wrap = document.getElementById('photoPreviewWrap');
+    const fileInput = document.getElementById('photo');
+    if (checkbox.checked) {
+        wrap.style.opacity = '0.4';
+        fileInput.value = '';   // clear any selected file
+    } else {
+        wrap.style.opacity = '1';
+    }
+}
+
 let map = null;
 let marker = null;
 let searchTimeout = null;

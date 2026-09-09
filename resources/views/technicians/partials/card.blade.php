@@ -14,7 +14,17 @@
      data-category="spec-{{ $tech->specialization_id ?? 'other' }}">
     <div class="technician-card-box">
         <div class="tech-image-wrap">
-            <img src="{{ asset('images/tech-avatar.jpg') }}" alt="{{ $tech->full_name }}" class="tech-avatar-img">
+            @php $techPhoto = $tech->getFirstMediaUrl('avatar', 'thumb') ?: $tech->getFirstMediaUrl('avatar'); @endphp
+            @if(!empty($techPhoto))
+                <img src="{{ $techPhoto }}"
+                     alt="{{ $tech->full_name }}"
+                     class="tech-avatar-img"
+                     loading="lazy">
+            @else
+                <div class="tech-avatar-icon-placeholder">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            @endif
             <span class="tech-status-badge {{ $status['class'] }}">{{ $status['label'] }}</span>
             <div class="tech-rating-pill">
                 <i class="fas fa-star text-warning"></i>

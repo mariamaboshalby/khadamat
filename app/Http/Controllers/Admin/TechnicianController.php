@@ -75,6 +75,7 @@ class TechnicianController extends AdminController
             'address' => 'nullable|string|max:500',
             'badges' => 'nullable|array',
             'badges.*' => 'required|in:beginner,intermediate,expert,master',
+            'photo' => 'nullable|image|mimes:jpeg,png,webp,gif|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -104,6 +105,12 @@ class TechnicianController extends AdminController
                 'longitude' => $validated['longitude'] ?? null,
                 'address' => $validated['address'] ?? null,
             ]);
+
+            // Upload photo via Spatie MediaLibrary
+            if ($request->hasFile('photo')) {
+                $technician->addMediaFromRequest('photo')
+                    ->toMediaCollection('avatar');
+            }
 
             // Add badges
             if (!empty($validated['badges'])) {
@@ -195,6 +202,8 @@ class TechnicianController extends AdminController
             'address' => 'nullable|string|max:500',
             'badges' => 'nullable|array',
             'badges.*' => 'required|in:beginner,intermediate,expert,master',
+            'photo' => 'nullable|image|mimes:jpeg,png,webp,gif|max:2048',
+            'remove_photo' => 'nullable|boolean',
         ]);
 
         DB::beginTransaction();
@@ -221,6 +230,15 @@ class TechnicianController extends AdminController
                 'longitude' => $validated['longitude'] ?? null,
                 'address' => $validated['address'] ?? null,
             ]);
+
+            // Handle photo via Spatie MediaLibrary
+            if ($request->hasFile('photo')) {
+                // addMediaFromRequest with singleFile() automatically removes the old one
+                $technician->addMediaFromRequest('photo')
+                    ->toMediaCollection('avatar');
+            } elseif ($request->boolean('remove_photo')) {
+                $technician->clearMediaCollection('avatar');
+            }
 
             // Update badges
             $technician->badges()->delete();
