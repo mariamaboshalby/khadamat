@@ -3,80 +3,66 @@
 @section('title', 'الإشعارات')
 
 @section('content')
-    <div class="app-content py-5 px-2">
+    <div class="notif-page fade-in">
+
         <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-            <div>
-                <h4 class="fw-bold m-0" style="color: var(--text-primary);">الإشعارات</h4>
-                <p class="text-muted small m-0">تابع آخر التحديثات والطلبات</p>
+        <div class="notif-header">
+            <div class="notif-header-text">
+                <h1 class="notif-h1">الإشعارات</h1>
+                <p class="notif-sub">تابع آخر التحديثات والطلبات</p>
             </div>
             @if (auth()->user()->unreadNotifications()->count() > 0)
-                <button id="mark-all-read" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                <button id="mark-all-read" class="btn-markall">
                     <i class="fas fa-check-double me-1"></i> تعليم الكل كمقروء
                 </button>
             @endif
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center">
-                <i class="fas fa-check-circle me-2 fs-5"></i>
-                <div>{{ session('success') }}</div>
-            </div>
+            <div class="notif-flash"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
         @endif
 
         @if ($notifications->isEmpty())
-            <div class="text-center py-5">
-                <div class="empty-state-icon mb-3">
-                    <i class="fas fa-bell-slash"></i>
-                </div>
-                <h5 class="fw-bold text-muted">لا توجد إشعارات</h5>
-                <p class="text-muted small">ليس لديك أي إشعارات جديدة في الوقت الحالي.</p>
-                <a href="{{ route('home') }}" class="btn-primary rounded-pill px-4 mt-2">العودة للرئيسية</a>
+            <div class="notif-empty-state">
+                <div class="empty-ico"><i class="fas fa-bell-slash"></i></div>
+                <h5 class="empty-title">لا توجد إشعارات</h5>
+                <p class="empty-text">ليس لديك أي إشعارات جديدة في الوقت الحالي.</p>
+                <a href="{{ route('home') }}" class="btn-home">العودة للرئيسية</a>
             </div>
         @else
-            <div class="notifications-list pb-5">
+            <div class="notif-list">
                 @foreach ($notifications as $notification)
-                    <div class="notification-card {{ $notification->read_at ? 'read' : 'unread' }} mb-3 fade-in"
-                        @if(isset($notification->data['action_url'])) 
-                            data-url="{{ $notification->data['action_url'] }}" 
-                            style="cursor: pointer;"
+                    <div class="notif-card {{ $notification->read_at ? 'read' : 'unread' }}"
+                        @if (isset($notification->data['action_url']))
+                            data-url="{{ $notification->data['action_url'] }}" style="cursor: pointer;"
                         @endif>
-                        <div class="d-flex align-items-start p-3">
-                            <div class="flex-shrink-0 ms-3">
-                                <div
-                                    class="icon-circle {{ $notification->read_at ? 'bg-light text-muted' : 'bg-primary-subtle text-primary' }}">
-                                    <i
-                                        class="fas {{ isset($notification->data['icon']) ? $notification->data['icon'] : 'fa-bell' }}"></i>
-                                </div>
+                        <div class="notif-card-inner">
+                            <div class="notif-ico">
+                                <i class="fas {{ $notification->data['icon'] ?? 'fa-bell' }}"></i>
                             </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h6 class="fw-bold mb-0 text-dark">{{ $notification->data['message'] ?? 'إشعار جديد' }}
-                                    </h6>
-                                    <span class="time-badge">{{ $notification->created_at->diffForHumans() }}</span>
+
+                            <div class="notif-main">
+                                <div class="notif-top">
+                                    <h6 class="notif-msg">{{ $notification->data['message'] ?? 'إشعار جديد' }}</h6>
+                                    <span class="notif-time">{{ $notification->created_at->diffForHumans() }}</span>
                                 </div>
 
-                                <div class="notification-details mb-2">
-                                    @if (isset($notification->data['service_name']))
-                                        <span class="badge bg-light text-dark border me-1">
-                                            <i class="fas fa-tools me-1 text-muted"></i>
-                                            {{ $notification->data['service_name'] }}
-                                        </span>
-                                    @endif
-                                    @if (isset($notification->data['request_id']))
-                                        <span class="badge bg-light text-dark border">
-                                            <i class="fas fa-hashtag me-1 text-muted"></i>
-                                            {{ $notification->data['request_id'] }}
-                                        </span>
-                                    @endif
-                                </div>
+                                @if (isset($notification->data['service_name']) || isset($notification->data['request_id']))
+                                    <div class="notif-tags">
+                                        @if (isset($notification->data['service_name']))
+                                            <span class="notif-tag"><i class="fas fa-wrench"></i>{{ $notification->data['service_name'] }}</span>
+                                        @endif
+                                        @if (isset($notification->data['request_id']))
+                                            <span class="notif-tag"><i class="fas fa-hashtag"></i>{{ $notification->data['request_id'] }}</span>
+                                        @endif
+                                    </div>
+                                @endif
 
                                 @if (!$notification->read_at)
-                                    <div class="d-flex justify-content-end mt-2">
+                                    <div class="notif-actions">
                                         <button data-id="{{ $notification->id }}"
-                                            class="mark-as-read btn btn-sm btn-link text-decoration-none p-0 text-primary fw-bold"
-                                            style="font-size: 0.85rem;">
-                                            تعليم كمقروء <i class="fas fa-check ms-1"></i>
+                                            class="mark-as-read">
+                                            تعليم كمقروء <i class="fas fa-check"></i>
                                         </button>
                                     </div>
                                 @endif
@@ -86,7 +72,7 @@
                 @endforeach
             </div>
 
-            <div class="d-flex justify-content-center mt-4 mb-5">
+            <div class="notif-pagination">
                 {{ $notifications->links('pagination::bootstrap-5') }}
             </div>
         @endif
@@ -94,90 +80,130 @@
 
     @push('styles')
         <style>
-            .bg-primary-subtle {
-                background-color: rgba(204, 51, 51, 0.1) !important;
+            .notif-page {
+                max-width: 760px;
+                margin: 0 auto;
+                padding: 24px 16px 48px;
             }
 
-            .empty-state-icon {
-                width: 80px;
-                height: 80px;
-                background: var(--bg-color);
-                border-radius: 50%;
+            .notif-header {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                font-size: 32px;
-                color: var(--text-muted);
-                margin: 0 auto;
+                justify-content: space-between;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+            }
+            .notif-h1 { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0; }
+            .notif-sub { color: var(--text-muted); font-size: 13px; margin: 2px 0 0; }
+
+            .btn-markall {
+                background: #eef5f9;
+                color: var(--primary-color);
+                border: 1px solid #d7e8f1;
+                border-radius: 30px;
+                padding: 8px 16px;
+                font-weight: 700;
+                font-size: 13px;
+                transition: all .2s;
+            }
+            .btn-markall:hover { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+
+            .notif-flash {
+                display: flex; align-items: center; gap: 10px;
+                background: #e9f7f0; color: #067647;
+                border: 1px solid #b7e4c7; border-radius: 12px;
+                padding: 12px 16px; margin-bottom: 16px; font-weight: 600; font-size: 14px;
             }
 
-            .notification-card {
+            .notif-list { display: flex; flex-direction: column; gap: 12px; }
+
+            .notif-card {
                 background: var(--surface-color);
                 border: 1px solid var(--border-color);
                 border-radius: 16px;
-                transition: all 0.2s ease;
+                transition: all .2s ease;
                 position: relative;
                 overflow: hidden;
             }
-
-            .notification-card.unread {
-                border-left: 4px solid var(--primary-color);
-                background: #fffafa;
-                /* Very light tint */
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            .notif-card.unread {
+                border-color: #cfe4ef;
+                box-shadow: 0 6px 18px -8px rgba(11, 95, 138, .18);
             }
-
-            .notification-card.unread::before {
+            .notif-card.unread::before {
                 content: '';
                 position: absolute;
-                top: 15px;
-                right: 15px;
-                width: 8px;
-                height: 8px;
-                background-color: var(--primary-color);
-                border-radius: 50%;
+                inset-inline-start: 0;
+                top: 0; bottom: 0;
+                width: 4px;
+                background: var(--primary-color);
+            }
+            .notif-card.read { opacity: .72; }
+            .notif-card[data-url]:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(11,95,138,.28); }
+
+            .notif-card-inner { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; }
+
+            .notif-ico {
+                width: 44px; height: 44px; flex-shrink: 0;
+                display: flex; align-items: center; justify-content: center;
+                border-radius: 12px; font-size: 18px;
+                background: #eef5f9; color: var(--primary-color);
+            }
+            .notif-card.read .notif-ico { background: #f1f5f9; color: var(--text-muted); }
+
+            .notif-main { flex: 1; min-width: 0; }
+
+            .notif-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+            .notif-msg { font-weight: 700; color: var(--text-primary); margin: 0; font-size: 15px; line-height: 1.5; }
+            .notif-card.read .notif-msg { font-weight: 600; color: var(--text-secondary); }
+
+            .notif-time {
+                font-size: 12px; color: var(--text-muted);
+                background: #f1f5f9; padding: 3px 10px; border-radius: 20px;
+                white-space: nowrap; flex-shrink: 0;
             }
 
-            .notification-card.read {
-                opacity: 0.85;
+            .notif-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+            .notif-tag {
+                display: inline-flex; align-items: center; gap: 6px;
+                background: #f8fafc; border: 1px solid var(--border-color);
+                color: var(--text-secondary); border-radius: 8px;
+                padding: 4px 10px; font-size: 12px; font-weight: 600;
             }
+            .notif-tag i { color: var(--text-muted); font-size: 11px; }
 
-            .icon-circle {
-                width: 45px;
-                height: 45px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
+            .notif-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+            .mark-as-read {
+                background: none; border: none; padding: 0;
+                color: var(--primary-color); font-weight: 700; font-size: 13px;
+                display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
             }
+            .mark-as-read:hover { text-decoration: underline; }
 
-            .time-badge {
-                font-size: 0.75rem;
-                color: var(--text-muted);
-                background: var(--bg-color);
-                padding: 2px 8px;
-                border-radius: 12px;
-                white-space: nowrap;
-                margin-right: 8px;
+            .notif-card.marking-read { transform: scale(.985); opacity: .6; }
+
+            /* Empty state */
+            .notif-empty-state { text-align: center; padding: 48px 20px; }
+            .empty-ico {
+                width: 84px; height: 84px; margin: 0 auto 16px;
+                background: #f1f5f9; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 34px; color: var(--text-muted);
             }
-
-            .notification-details .badge {
-                font-weight: 500;
-                padding: 5px 10px;
-                border-radius: 8px;
+            .empty-title { font-weight: 800; color: var(--text-secondary); }
+            .empty-text { color: var(--text-muted); font-size: 14px; margin-bottom: 18px; }
+            .btn-home {
+                display: inline-block; background: var(--primary-color); color: #fff;
+                padding: 10px 24px; border-radius: 30px; font-weight: 700; text-decoration: none;
+                transition: all .2s;
             }
+            .btn-home:hover { background: var(--primary-dark); color: #fff; }
 
-            /* Animation on read */
-            .notification-card.marking-read {
-                transform: scale(0.98);
-                opacity: 0.7;
-            }
+            .notif-pagination { display: flex; justify-content: center; margin-top: 24px; }
 
-            /* Clickable card hover effect */
-            .notification-card[data-url]:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            @media (max-width: 480px) {
+                .notif-top { flex-direction: column-reverse; align-items: flex-start; }
+                .notif-time { margin-bottom: 4px; }
             }
         </style>
     @endpush
@@ -187,146 +213,85 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                // Helper: Update Navbar Badge locally
-                function decrementNavbarBadge(count = 1) {
-                    const badge = document.getElementById('notification-badge');
-                    if (badge) {
-                        let current = parseInt(badge.innerText) || 0;
-                        let newCount = Math.max(0, current - count);
-                        badge.innerText = newCount;
-                        if (newCount === 0) badge.style.display = 'none';
-                    }
+                function updateBadges(count) {
+                    document.querySelectorAll('.js-notif-count').forEach(function(b) {
+                        if (count > 0) { b.style.display = ''; b.textContent = count > 99 ? '99+' : count; }
+                        else { b.style.display = 'none'; }
+                    });
                 }
 
-                // Click on card → navigate to action_url (mark as read first if unread)
-                document.querySelectorAll('.notification-card[data-url]').forEach(card => {
+                function currentBadgeCount() {
+                    const b = document.querySelector('.js-notif-count');
+                    return b ? (parseInt((b.textContent || '0').replace('+', '')) || 0) : 0;
+                }
+
+                // Click card → navigate (mark read first if unread)
+                document.querySelectorAll('.notif-card[data-url]').forEach(card => {
                     card.addEventListener('click', function(e) {
-                        // Don't trigger if clicking the mark-as-read button
                         if (e.target.closest('.mark-as-read')) return;
-
                         const url = this.getAttribute('data-url');
-                        const notificationId = this.querySelector('.mark-as-read')?.getAttribute('data-id');
-
-                        // If unread, mark as read silently then navigate
-                        if (this.classList.contains('unread') && notificationId) {
-                            fetch(`/notifications/${notificationId}/read`, {
+                        const readBtn = this.querySelector('.mark-as-read');
+                        if (this.classList.contains('unread') && readBtn) {
+                            fetch(`/notifications/${readBtn.getAttribute('data-id')}/read`, {
                                 method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                            }).finally(() => {
-                                window.location.href = url;
-                            });
+                                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' }
+                            }).finally(() => { window.location.href = url; });
                         } else {
                             window.location.href = url;
                         }
                     });
                 });
 
-                // Mark single notification as read (Optimistic UI)
+                // Mark single as read (optimistic)
                 document.querySelectorAll('.mark-as-read').forEach(button => {
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
+                        e.stopPropagation();
                         const btn = this;
-                        const card = btn.closest('.notification-card');
+                        const card = btn.closest('.notif-card');
                         const notificationId = btn.getAttribute('data-id');
 
-                        // 1. Visual Feedback Immediately
-                        card.classList.add('marking-read'); // Start animation
-                        btn.style.pointerEvents = 'none'; // Prevent double clicks
+                        card.classList.add('marking-read');
+                        btn.style.pointerEvents = 'none';
 
-                        // 2. Scheduled UI cleanup (matches CSS transition)
                         setTimeout(() => {
                             card.classList.remove('unread', 'marking-read');
                             card.classList.add('read');
-
-                            // Remove button area
-                            const actionArea = btn.closest('.d-flex');
+                            const actionArea = btn.closest('.notif-actions');
                             if (actionArea) actionArea.remove();
+                            updateBadges(Math.max(0, currentBadgeCount() - 1));
+                        }, 300);
 
-                            // Update icon style
-                            const iconBox = card.querySelector('.icon-circle');
-                            if (iconBox) {
-                                iconBox.classList.remove('bg-primary-subtle', 'text-primary');
-                                iconBox.classList.add('bg-light', 'text-muted');
-                            }
-
-                            // 3. Update Badge Instantly
-                            decrementNavbarBadge(1);
-                        }, 300); // Wait for the 0.3s CSS transition
-
-                        // 4. Send Request in Background
                         fetch(`/notifications/${notificationId}/read`, {
                             method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                        }).catch(error => {
-                            console.error('Network Error:', error);
-                            // Optionally revert UI here if needed
-                        });
+                            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' }
+                        }).catch(err => console.error('Network Error:', err));
                     });
                 });
 
-                // Mark All as Read (Optimistic UI)
+                // Mark all as read
                 const markAllReadButton = document.getElementById('mark-all-read');
                 if (markAllReadButton) {
                     markAllReadButton.addEventListener('click', function() {
                         const btn = this;
-
-                        // 1. Visual Feedback
                         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> جاري التحديث...';
                         btn.disabled = true;
 
-                        // 2. Update all unread cards visually immediately
-                        const unreadCards = document.querySelectorAll('.notification-card.unread');
-                        unreadCards.forEach(card => {
+                        document.querySelectorAll('.notif-card.unread').forEach(card => {
                             card.classList.remove('unread');
                             card.classList.add('read');
-
-                            // Remove buttons inside them
-                            const actionBtn = card.querySelector('.mark-as-read');
-                            if (actionBtn) {
-                                const actionArea = actionBtn.closest('.d-flex');
-                                if (actionArea) actionArea.remove();
-                            }
-
-                            // Update icons
-                            const iconBox = card.querySelector('.icon-circle');
-                            if (iconBox) {
-                                iconBox.classList.remove('bg-primary-subtle', 'text-primary');
-                                iconBox.classList.add('bg-light', 'text-muted');
-                            }
+                            const actionArea = card.querySelector('.notif-actions');
+                            if (actionArea) actionArea.remove();
                         });
 
-                        // 3. Clear Badge
-                        const badge = document.getElementById('notification-badge');
-                        if (badge) badge.style.display = 'none';
+                        updateBadges(0);
 
-                        // 4. Send Server Request
                         fetch('/notifications/mark-all-read', {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    btn.remove(); // Remove the "Mark all" button
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                // If failed, we might want to reload to sync state
-                                // location.reload(); 
-                            });
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' }
+                        }).then(r => r.json()).then(data => {
+                            if (data.success) btn.remove();
+                        }).catch(err => console.error('Error:', err));
                     });
                 }
             });

@@ -2,15 +2,15 @@
 
 @section('title', 'مراجعة عرض السعر')
 
-@section('content')
-
-<div class="app-header glass d-md-none">
+@section('mobile_header')
     <div class="header-icon-btn" onclick="history.back()">
         <i class="fas fa-arrow-right"></i>
     </div>
-    <div class="app-logo">عرض السعر</div>
-    <div class="header-icon-btn"></div>
-</div>
+    <div class="app-logo fw-bold">عرض السعر</div>
+    <div class="header-icon-btn" style="visibility: hidden;"></div>
+@endsection
+
+@section('content')
 
 <div class="app-content fade-in">
     
@@ -18,7 +18,7 @@
         <h4 class="mb-3">عرض سعر من الفني</h4>
         <div class="technician-info">
             <div class="d-flex align-items-center gap-3">
-                @php $techPhoto = $request->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $request->assignedTechnician->getFirstMediaUrl('avatar'); @endphp
+                @php $techPhoto = media_url($request->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $request->assignedTechnician->getFirstMediaUrl('avatar')); @endphp
                 @if(!empty($techPhoto))
                     <img src="{{ $techPhoto }}"
                          alt="{{ $request->assignedTechnician->user->name }}"

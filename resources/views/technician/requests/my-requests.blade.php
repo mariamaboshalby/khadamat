@@ -18,13 +18,6 @@
     </div>
 @endif
 
-{{-- Debug Info --}}
-<div class="alert alert-info">
-    <strong>Debug:</strong> عدد الطلبات: {{ $requests->count() }}<br>
-    <strong>Technician ID:</strong> {{ $technician->id ?? 'N/A' }}<br>
-    <strong>User ID:</strong> {{ auth()->user()->id }}
-</div>
-
 @if($requests->count() > 0)
     <div class="row g-4">
         @foreach($requests as $request)

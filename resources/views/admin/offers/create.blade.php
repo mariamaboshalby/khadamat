@@ -134,7 +134,7 @@
                                 style="width: 100%; padding: 14px 18px; padding-left: 48px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; transition: all 0.2s; background: white;"
                                 onfocus="this.style.borderColor='#10b981'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(16, 185, 129, 0.1)';"
                                 onblur="this.style.borderColor='#e2e8f0'; this.style.background='white'; this.style.boxShadow='none';"
-                                placeholder="مثال: 20% أو 50 ريال">
+                                placeholder="مثال: 20% أو 50 جنيه">
                             <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #a0aec0;" width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>

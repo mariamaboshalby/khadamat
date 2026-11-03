@@ -19,9 +19,21 @@ class HomeController extends Controller
     {
         $services = Service::all();
         $offers = Offer::all();
-        $reviews = Review::all();
+        $reviews = Review::with(['user', 'technician.user'])
+            ->where('status', 'approved')
+            ->orderByDesc('rating')
+            ->orderByDesc('created_at')
+            ->take(6)
+            ->get();
         $strategies = Strategy::orderBy('step_number')->get();
-        return view('home', compact('services', 'offers', 'reviews', 'strategies'));
+
+        $topTechnicians = Technician::with(['user', 'specialization'])
+            ->where('rating', '>', 0)
+            ->orderByDesc('rating')
+            ->take(4)
+            ->get();
+
+        return view('home-calm', compact('services', 'offers', 'reviews', 'strategies', 'topTechnicians'));
     }
 
     public function technicians(Request $request)

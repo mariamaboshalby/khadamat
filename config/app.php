@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Cairo',
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +82,7 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'ar'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'ar_SA'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'ar_EG'),
 
     /*
     |--------------------------------------------------------------------------

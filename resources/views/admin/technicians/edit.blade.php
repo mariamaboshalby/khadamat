@@ -4,10 +4,19 @@
 @section('header_title', 'تعديل بيانات الفني')
 
 @section('content')
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-    <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center;">
+<style>
+    @media (max-width: 768px) {
+        .tech-page-header { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+        .tech-page-header a { justify-content: center !important; }
+        [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 16px !important; }
+        .tech-form-actions { flex-wrap: wrap !important; justify-content: stretch !important; }
+        .tech-form-actions button, .tech-form-actions a { flex: 1 1 auto; justify-content: center; }
+    }
+</style>
+<div style="max-width: 1200px; margin: 0 auto; padding: 10px 14px;">
+    <div class="tech-page-header" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h1 style="font-size: 32px; margin: 0 0 8px; color: #2d3748; font-weight: 700;">تعديل بيانات الفني</h1>
+            <h1 style="font-size: 21px; margin: 0 0 4px; color: #2d3748; font-weight: 700;">تعديل بيانات الفني</h1>
             <p style="color: #718096; margin: 0; font-size: 16px;">تحديث بيانات الفني: {{ $technician->user->name ?? 'غير معروف' }}</p>
         </div>
         <a href="{{ route('admin.techs.index') }}" 
@@ -22,7 +31,7 @@
     </div>
     
     <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 16px;">
-        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 32px; color: white;">
+        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 16px 22px; color: white;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,17 +45,17 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('admin.techs.update', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" style="padding: 32px;" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.techs.update', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" style="padding: 20px;" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             {{-- Photo Section --}}
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #667eea;">00.</span> صورة الفني
                 </h4>
 
-                @php $currentPhoto = $technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar'); @endphp
+                @php $currentPhoto = media_url($technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar')); @endphp
 
                 <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
                     {{-- Current / Preview --}}
@@ -94,8 +103,8 @@
             </div>
 
             {{-- Personal Info Section --}}
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #667eea;">01.</span> المعلومات الشخصية
                 </h4>
 
@@ -156,8 +165,8 @@
             </div>
 
             {{-- Job Info Section --}}
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #667eea;">02.</span> المعلومات الوظيفية
                 </h4>
 
@@ -242,12 +251,12 @@
             </div>
 
             {{-- Location Section --}}
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #667eea;">03.</span> الموقع الجغرافي
                 </h4>
 
-                <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 12px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                         <button type="button" onclick="event.preventDefault(); getCurrentLocation();" 
                             class="location-btn"
@@ -357,8 +366,8 @@
             </div>
 
             {{-- Badges Section --}}
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #667eea;">04.</span> الشارات
                 </h4>
                 
@@ -398,7 +407,7 @@
                 </button>
             </div>
 
-            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;">
+            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;" class="tech-form-actions">
                 <a href="{{ route('admin.techs.show', \App\Helpers\EncryptionHelper::encryptId($technician->id)) }}" class="btn btn-outline-secondary">
                     إلغاء
                 </a>
@@ -412,7 +421,6 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 @keyframes slideDown {
     from {
@@ -514,22 +522,7 @@
     to { transform: rotate(360deg); }
 }
 
-/* Map Marker Bounce */
-.leaflet-marker-icon {
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-10px);
-    }
-    60% {
-        transform: translateY(-5px);
-    }
-}
+/* Map marker bounce (Google Maps marker uses native animation) */
 
 /* Smooth transitions for all inputs */
 input, textarea, select {
@@ -539,7 +532,6 @@ input, textarea, select {
 @endpush
 
 @push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // Photo preview & remove toggle
 function previewPhoto(input) {
@@ -575,6 +567,8 @@ function toggleRemovePhoto(checkbox) {
 
 let map = null;
 let marker = null;
+let gmapsGeocoder = null;
+let gmapsLoaded = false;
 let searchTimeout = null;
 let badgeIndex = {{ $technician->badges->count() }};
 
@@ -689,21 +683,41 @@ function getCurrentLocation() {
     }
 }
 
+function ensureGoogleMaps(cb) {
+    if (gmapsLoaded && window.google && window.google.maps) { cb(); return; }
+    const key = @json(trim((string) config('services.google.maps.key')));
+    if (!key) { showNoKeyNotice(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) + '&language=ar&region=EG';
+    s.async = true;
+    s.onload = function () { gmapsLoaded = true; cb(); };
+    s.onerror = function () { showNoKeyNotice(); };
+    document.head.appendChild(s);
+}
+
+function showNoKeyNotice() {
+    const mapEl = document.getElementById('map');
+    if (mapEl) {
+        mapEl.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:#718096;padding:24px;font-weight:600;line-height:1.8;">الخريطة التفاعلية تحتاج Google Maps API key.<br>أضِفه في ملف .env باسم GOOGLE_MAPS_API_KEY.<br><br>يمكنك إدخال خط العرض والطول يدويًا.</div>';
+    }
+}
+
 function toggleMapView() {
     const mapContainer = document.getElementById('mapContainer');
     const statusDiv = document.getElementById('locationStatus');
-    
+
     if (mapContainer.style.display === 'none') {
         mapContainer.style.display = 'block';
         statusDiv.style.display = 'block';
         statusDiv.style.background = 'rgba(16, 185, 129, 0.1)';
         statusDiv.style.border = '1px solid rgba(16, 185, 129, 0.3)';
         statusDiv.style.color = '#10b981';
-        statusDiv.innerHTML = '🗺️ الخريطة مفتوحة - انقر على الخريطة لتحديد الموقع';
-        
-        if (!map) {
-            initMap();
-        }
+        statusDiv.innerHTML = '🗺️ الخريطة مفتوحة - انقر على الخريطة أو اسحب العلامة لتحديد الموقع';
+
+        ensureGoogleMaps(function () {
+            if (!map) { initMap(); }
+            else { google.maps.event.trigger(map, 'resize'); }
+        });
     } else {
         mapContainer.style.display = 'none';
         statusDiv.style.display = 'none';
@@ -711,71 +725,71 @@ function toggleMapView() {
 }
 
 function initMap() {
-    const lat = document.getElementById('latitude').value || 24.7136;
-    const lng = document.getElementById('longitude').value || 46.6753;
-    
-    map = L.map('map').setView([lat, lng], 13);
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-    }).addTo(map);
-    
-    // Add marker if coordinates exist
-    if (document.getElementById('latitude').value && document.getElementById('longitude').value) {
-        marker = L.marker([lat, lng], {
-            draggable: true
-        }).addTo(map);
-        
-        marker.on('dragend', function(e) {
-            const pos = marker.getLatLng();
-            updateCoordinates(pos.lat, pos.lng);
-        });
+    const savedLat = parseFloat(document.getElementById('latitude').value);
+    const savedLng = parseFloat(document.getElementById('longitude').value);
+    const hasSaved = !isNaN(savedLat) && !isNaN(savedLng);
+    const lat = hasSaved ? savedLat : 26.8206;   // مركز مصر افتراضيًا
+    const lng = hasSaved ? savedLng : 30.8025;
+
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: lat, lng: lng },
+        zoom: hasSaved ? 15 : 6,
+        mapTypeControl: false,
+        streetViewControl: false,
+        clickableIcons: false,
+    });
+    gmapsGeocoder = new google.maps.Geocoder();
+
+    // ضع علامة على إحداثيات الفني المحفوظة في قاعدة البيانات
+    if (hasSaved) {
+        placeMarkerAt(lat, lng);
     }
-    
-    // Click on map to add/move marker
-    map.on('click', function(e) {
-        updateMapMarker(e.latlng.lat, e.latlng.lng);
+
+    // النقر على الخريطة ينقل العلامة
+    map.addListener('click', function (e) {
+        updateMapMarker(e.latLng.lat(), e.latLng.lng());
+    });
+}
+
+function placeMarkerAt(lat, lng) {
+    if (marker) {
+        marker.setPosition({ lat: lat, lng: lng });
+        return;
+    }
+    marker = new google.maps.Marker({
+        position: { lat: lat, lng: lng },
+        map: map,
+        draggable: true,
+        title: 'موقع الفني',
+        animation: google.maps.Animation.DROP,
+    });
+    marker.addListener('dragend', function () {
+        const p = marker.getPosition();
+        updateCoordinates(p.lat(), p.lng());
     });
 }
 
 function updateMapMarker(lat, lng) {
     if (!map) return;
-    
-    if (marker) {
-        marker.setLatLng([lat, lng]);
-    } else {
-        marker = L.marker([lat, lng], {
-            draggable: true
-        }).addTo(map);
-        
-        marker.on('dragend', function(e) {
-            const pos = marker.getLatLng();
-            updateCoordinates(pos.lat, pos.lng);
-        });
-    }
-    
-    map.setView([lat, lng], 13);
+    placeMarkerAt(lat, lng);
+    map.setCenter({ lat: lat, lng: lng });
+    map.setZoom(15);
     updateCoordinates(lat, lng);
 }
 
 function updateCoordinates(lat, lng) {
-    document.getElementById('latitude').value = lat.toFixed(6);
-    document.getElementById('longitude').value = lng.toFixed(6);
+    document.getElementById('latitude').value = Number(lat).toFixed(6);
+    document.getElementById('longitude').value = Number(lng).toFixed(6);
     getAddressFromCoordinates(lat, lng);
 }
 
 function getAddressFromCoordinates(lat, lng) {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ar`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.display_name) {
-                document.getElementById('address').value = data.display_name;
-            }
-        })
-        .catch(error => {
-            console.log('Error getting address:', error);
-        });
+    if (!gmapsGeocoder) return;
+    gmapsGeocoder.geocode({ location: { lat: parseFloat(lat), lng: parseFloat(lng) } }, function (res, status) {
+        if (status === 'OK' && res && res[0]) {
+            document.getElementById('address').value = res[0].formatted_address;
+        }
+    });
 }
 
 // Search functionality
@@ -803,17 +817,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function searchLocation(query) {
     const searchResults = document.getElementById('searchResults');
     searchResults.innerHTML = `
-        <div style="padding: 16px; text-align: center; color: #667eea;">
-            <div class="spinner" style="margin: 0 auto 8px;"></div>
+        <div style="padding: 16px; text-align: center; color: #0b5f8a;">
+            <div class="spinner" style="margin: 0 auto 8px; border-color: rgba(11,95,138,0.2); border-top-color: #0b5f8a;"></div>
             <div style="font-weight: 600;">جاري البحث...</div>
         </div>
     `;
     searchResults.style.display = 'block';
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&accept-language=ar&countrycodes=sa&limit=5`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.length === 0) {
+
+    const runSearch = function () {
+        if (window.google && window.google.maps && !gmapsGeocoder) {
+            gmapsGeocoder = new google.maps.Geocoder();
+        }
+        if (!gmapsGeocoder) { searchResults.style.display = 'none'; return; }
+
+        gmapsGeocoder.geocode({ address: query, componentRestrictions: { country: 'EG' } }, function (res, status) {
+            if (status !== 'OK' || !res || res.length === 0) {
                 searchResults.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: #718096;">
                         <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto 10px; opacity: 0.5;">
@@ -825,40 +843,34 @@ function searchLocation(query) {
                 `;
                 return;
             }
-            
+
             let html = '';
-            data.forEach((item, index) => {
+            res.slice(0, 5).forEach(function (item) {
+                const name = item.formatted_address || '';
+                const safe = name.replace(/'/g, "\\'");
+                const lat = item.geometry.location.lat();
+                const lng = item.geometry.location.lng();
                 html += `
-                    <div onclick="selectLocation(${item.lat}, ${item.lon}, '${item.display_name.replace(/'/g, "\\'")}')"
+                    <div onclick="selectLocation(${lat}, ${lng}, '${safe}')"
                          style="padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: all 0.2s; display: flex; align-items: start; gap: 12px;"
-                         onmouseover="this.style.background='linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(102, 126, 234, 0.02) 100%)'; this.style.transform='translateX(4px)'"
+                         onmouseover="this.style.background='rgba(11, 95, 138, 0.06)'; this.style.transform='translateX(4px)'"
                          onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="flex-shrink: 0; margin-top: 2px; color: #667eea;">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="flex-shrink: 0; margin-top: 2px; color: #0b5f8a;">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                         </svg>
                         <div style="flex: 1; min-width: 0;">
-                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.display_name.split(',')[0]}</div>
-                            <div style="font-size: 12px; color: #718096; line-height: 1.4;">${item.display_name}</div>
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name.split(',')[0]}</div>
+                            <div style="font-size: 12px; color: #718096; line-height: 1.4;">${name}</div>
                         </div>
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 4px; color: #a0aec0;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
                     </div>
                 `;
             });
-            
+
             searchResults.innerHTML = html;
-        })
-        .catch(error => {
-            searchResults.innerHTML = `
-                <div style="padding: 20px; text-align: center; color: #ef4444;">
-                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 20 20" style="margin: 0 auto 10px; opacity: 0.5;">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    <div style="font-weight: 600;">حدث خطأ في البحث</div>
-                </div>
-            `;
         });
+    };
+
+    ensureGoogleMaps(runSearch);
 }
 
 function selectLocation(lat, lng, address) {

@@ -4,10 +4,20 @@
 
 @section('content')
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-    <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center;">
+<style>
+    @media (max-width: 768px) {
+        .tech-page-header { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+        .tech-page-header a { justify-content: center !important; }
+        [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 16px !important; }
+        .tech-form-actions { flex-wrap: wrap !important; justify-content: stretch !important; }
+        .tech-form-actions button, .tech-form-actions a { flex: 1 1 auto; justify-content: center; }
+    }
+</style>
+
+<div style="max-width: 1200px; margin: 0 auto; padding: 10px 14px;">
+    <div class="tech-page-header" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h1 style="font-size: 32px; margin: 0 0 8px; color: #2d3748; font-weight: 700;">إضافة فني جديد</h1>
+            <h1 style="font-size: 21px; margin: 0 0 4px; color: #2d3748; font-weight: 700;">إضافة فني جديد</h1>
             <p style="color: #718096; margin: 0; font-size: 16px;">تسجيل بيانات فني جديد في النظام</p>
         </div>
         <a href="{{ route('admin.techs.index') }}" 
@@ -22,7 +32,7 @@
     </div>
     
     <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 16px;">
-        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 32px; color: white;">
+        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 16px 22px; color: white;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,12 +46,12 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('admin.techs.store') }}" style="padding: 32px;" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.techs.store') }}" style="padding: 20px;" enctype="multipart/form-data">
             @csrf
 
             <!-- Photo Upload Section -->
-            <div style="margin-bottom: 32px;">
-                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+            <div style="margin-bottom: 16px;">
+                <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                     <span style="color: #10b981;">00.</span> صورة الفني
                 </h4>
 
@@ -81,8 +91,8 @@
                 <div>
 
                     <!-- Personal Info Section -->
-                    <div style="margin-bottom: 32px;">
-                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                             <span style="color: #10b981;">01.</span> المعلومات الشخصية
                         </h4>
 
@@ -144,8 +154,8 @@
                     </div>
 
                     <!-- Account Info Section -->
-                    <div style="margin-bottom: 32px;">
-                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                             <span style="color: #10b981;">02.</span> بيانات الحساب
                         </h4>
 
@@ -184,8 +194,8 @@
                     </div>
 
                     <!-- Badges Section -->
-                    <div style="margin-bottom: 32px;">
-                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                             <span style="color: #10b981;">05.</span> الشارات
                         </h4>
 
@@ -208,8 +218,8 @@
                 <div>
 
                     <!-- Job Info Section -->
-                    <div style="margin-bottom: 32px;">
-                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                             <span style="color: #10b981;">03.</span> المعلومات الوظيفية
                         </h4>
 
@@ -275,12 +285,12 @@
                     </div>
 
                     <!-- Location Section -->
-                    <div style="margin-bottom: 32px;">
-                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; color: #4a5568; font-weight: 700; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc;">
                             <span style="color: #10b981;">04.</span> الموقع الجغرافي
                         </h4>
 
-                        <div style="margin-bottom: 20px;">
+                        <div style="margin-bottom: 12px;">
                             <div style="display: flex; gap: 12px; margin-bottom: 16px;">
                                 <button type="button" onclick="getCurrentLocation()"
                                     style="flex: 1; padding: 10px; border: 2px dashed #10b981; background: rgba(16, 185, 129, 0.05); color: #10b981; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px;"
@@ -309,7 +319,7 @@
                         <!-- Manual Location Fields (Hidden by default) -->
                         <div id="manualLocationFields" style="display: none;">
                             <!-- Location Search -->
-                            <div style="margin-bottom: 20px; position: relative;">
+                            <div style="margin-bottom: 12px; position: relative;">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568; font-size: 14px;">ابحث عن الموقع</label>
                                 <div style="position: relative;">
                                     <input type="text" id="locationSearch"
@@ -325,7 +335,7 @@
                                 <div id="searchResults" style="display: none; position: absolute; z-index: 1000; left: 0; right: 0; max-height: 300px; overflow-y: auto; background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-top: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"></div>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
                                 <div>
                                     <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568; font-size: 14px;">خط العرض</label>
                                     <div style="position: relative;">
@@ -382,7 +392,7 @@
 
             </div><!-- end TWO-COLUMN LAYOUT -->
 
-            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;">
+            <div style="padding-top: 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;" class="tech-form-actions">
                 <a href="{{ route('admin.techs.index') }}"
                     style="padding: 12px 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; color: #4a5568; text-decoration: none; font-weight: 600; transition: all 0.2s;"
                     onmouseover="this.style.background='#f7fafc'; this.style.borderColor='#cbd5e0';"

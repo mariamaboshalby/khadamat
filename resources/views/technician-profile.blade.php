@@ -177,7 +177,7 @@
                 <div class="tech-profile-card">
                     <div class="tech-profile-header-gradient text-center">
                         <div class="tech-avatar-circle-wrapper">
-                            @php $techPhoto = $technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar'); @endphp
+                            @php $techPhoto = media_url($technician->getFirstMediaUrl('avatar', 'thumb') ?: $technician->getFirstMediaUrl('avatar')); @endphp
                             @if(!empty($techPhoto))
                                 <img src="{{ $techPhoto }}"
                                      alt="{{ $technician->user?->name ?? $technician->full_name }}"
@@ -226,7 +226,7 @@
                         </div>
 
                         <!-- Primary CTA Button (طلب خدمة من هذا الفني) -->
-                        <a href="{{ route('requests.create', ['technician_id' => $technician->id]) }}" class="btn-book-technician-cta">
+                        <a href="{{ route('requests.create', ['technician_id' => \App\Helpers\EncryptionHelper::encryptId($technician->id)]) }}" class="btn-book-technician-cta">
                             <i class="far fa-calendar-alt ms-1"></i>
                             <span>طلب خدمة من هذا الفني</span>
                         </a>

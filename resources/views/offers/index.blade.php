@@ -3,50 +3,66 @@
 @section('title', 'العروض')
 
 @section('content')
-<div class="app-content fade-in  p-3">
-    <!-- Header -->
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <h4 class="fw-bold m-0">العروض الحصرية</h4>
-        <div class="p-3 bg-white rounded-circle shadow-sm">
-            <i class="fas fa-percent text-danger"></i>
+<div class="offers-page">
+
+    <div class="op-head">
+        <div>
+            <h1>العروض الحصرية</h1>
+            <p>خصومات مختارة لفترة محدودة</p>
         </div>
+        <div class="op-chip"><i class="fas fa-percent"></i></div>
     </div>
 
-    <!-- Offers List -->
-    <div class="row g-4">
-        @php
-            $gradients = [
-                'linear-gradient(135deg, #0b5f8a 0%, #ff6666 100%)',
-                'linear-gradient(135deg, #0b5f8a 0%, #ff6666 100%)',
-                'linear-gradient(135deg, #f97316 0%, #ec4899 100%)',
-                'linear-gradient(135deg, #10b981 0%, #ff6666 100%)',
-            ];
-        @endphp
+    @if($offers->count())
+    <div class="op-grid">
+        @foreach($offers as $offer)
+            <div class="op-card">
+                <div class="op-badge">{{ $offer->badge_text ?? 'عرض مميز' }}</div>
+                <h3 class="op-title">{{ $offer->title }}</h3>
+                <p class="op-sub">{{ $offer->subtitle_1 }}</p>
 
-        @foreach($offers as $index => $offer)
-            <div class="col-12 col-md-6">
-                <div class="promo-banner w-100 mb-0" style="background: {{ $gradients[$index % count($gradients)] }}; height: 200px; border-radius: 20px; position: relative; overflow: hidden; color: white; padding: 25px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-                    <div class="promo-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%); z-index: 1;"></div>
-                    
-                    <div class="promo-content position-relative" style="z-index: 2; width: 70%;">
-                        <div class="badge bg-white text-dark mb-2 px-3 py-2 rounded-pill fw-bold" style="backdrop-filter: blur(5px); background: rgba(255,255,255,0.9);">{{ $offer->badge_text ?? 'عرض مميز' }}</div>
-                        <h3 class="fw-bold mb-1">{{ $offer->title }}</h3>
-                        <p class="mb-3 opacity-75">{{ $offer->subtitle_1 }}</p>
-                        
-                        @if($offer->discount_value)
-                        <div class="d-inline-flex align-items-center bg-white text-dark px-3 py-2 rounded-3 shadow-sm">
-                            <span class="small">خصم</span>
-                            <span class="fw-bold ms-2 fs-5">{!! $offer->discount_value !!}</span>
-                        </div>
-                        @endif
-                    </div>
+                @if($offer->discount_value)
+                    <div class="op-discount"><span>خصم</span> <strong>{!! $offer->discount_value !!}</strong></div>
+                @endif
 
-                    @if($offer->icon)
-                    <i class="fas {{ $offer->icon }}" style="position: absolute; bottom: -20px; left: -20px; font-size: 120px; opacity: 0.15; transform: rotate(15deg); z-index: 0;"></i>
-                    @endif
-                </div>
+                @if($offer->icon)
+                    <i class="fas {{ $offer->icon }} op-icon"></i>
+                @endif
             </div>
         @endforeach
     </div>
+    @else
+        <div class="op-empty">
+            <i class="far fa-tag"></i>
+            <p>لا توجد عروض حالياً</p>
+        </div>
+    @endif
+
 </div>
+
+<style>
+    .offers-page { max-width: 980px; margin: 0 auto; padding: 10px 16px 40px; }
+    .op-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .op-head h1 { font-size: 22px; font-weight: 800; color: #072540; margin: 0; }
+    .op-head p { font-size: 13px; color: #64748b; margin: 3px 0 0; }
+    .op-chip { width: 46px; height: 46px; border-radius: 14px; background: #e7f1f6; color: #0b5f8a; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+
+    .op-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    .op-card { position: relative; overflow: hidden; background: linear-gradient(135deg, #0b5f8a 0%, #188ec9 100%); color: #fff; border-radius: 16px; padding: 22px; min-height: 175px; display: flex; flex-direction: column; justify-content: center; gap: 6px; box-shadow: 0 6px 16px rgba(11, 95, 138, .16); }
+    .op-badge { align-self: flex-start; background: rgba(255, 255, 255, .92); color: #0b5f8a; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 20px; margin-bottom: 4px; }
+    .op-title { font-size: 20px; font-weight: 800; margin: 0; }
+    .op-sub { font-size: 13.5px; opacity: .9; margin: 0 0 8px; }
+    .op-discount { align-self: flex-start; background: #fff; color: #072540; border-radius: 10px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; box-shadow: 0 2px 6px rgba(0, 0, 0, .08); }
+    .op-discount span { font-size: 12px; color: #64748b; }
+    .op-discount strong { color: #ff8a00; font-size: 18px; }
+    .op-icon { position: absolute; bottom: -18px; left: -10px; font-size: 120px; opacity: .14; transform: rotate(12deg); pointer-events: none; }
+
+    .op-empty { text-align: center; color: #94a3b8; padding: 60px 0; }
+    .op-empty i { font-size: 40px; margin-bottom: 12px; display: block; }
+
+    @media (max-width: 640px) {
+        .op-grid { grid-template-columns: 1fr; }
+    }
+</style>
 @endsection

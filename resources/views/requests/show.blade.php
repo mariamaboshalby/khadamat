@@ -3,15 +3,8 @@
 @section('title', 'تفاصيل الطلب #' . $requestData->id . ' | خدمتي')
 
 @push('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* Leaflet tiles must be above glass panels but below modals */
-        .leaflet-pane { z-index: 10 !important; }
-        .leaflet-tile-pane { z-index: 10 !important; }
-        .leaflet-overlay-pane { z-index: 20 !important; }
-        .leaflet-marker-pane { z-index: 30 !important; }
-        .leaflet-popup-pane { z-index: 40 !important; }
-        .leaflet-control { z-index: 50 !important; }
+        /* Floating map badges sit above the embedded Google Maps iframe */
         .map-floating-distance { z-index: 60 !important; }
         .map-expand-btn { z-index: 60 !important; }
     </style>
@@ -20,7 +13,7 @@
 @section('content')
 
     <div class="request-details-page py-3 py-md-4">
-        <div class="container-fluid px-3 px-md-4 px-lg-5">
+        <div class="container" style="max-width: 1140px;">
 
             <!-- Top Header & Breadcrumb Bar -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-2">
@@ -51,7 +44,7 @@
                         </button>
                     @endif
 
-                    <a href="https://wa.me/966500000000?text={{ urlencode('مرحباً، أود الاستفسار عن طلبي رقم #REQ-' . $requestData->id) }}" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 fw-bold small d-inline-flex align-items-center gap-2 shadow-sm" style="background-color: #072540; border-color: #072540;">
+                    <a href="https://wa.me/201000000000?text={{ urlencode('مرحباً، أود الاستفسار عن طلبي رقم #REQ-' . $requestData->id) }}" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 fw-bold small d-inline-flex align-items-center gap-2 shadow-sm" style="background-color: #072540; border-color: #072540;">
                         <i class="fas fa-headset"></i>
                         <span>الدعم الفني</span>
                     </a>
@@ -174,7 +167,7 @@
                             <div class="tech-pattern-banner"></div>
                             <div class="tech-card-body text-center px-4 pb-4">
                                 <div class="tech-avatar-wrapper mx-auto mb-3">
-                                    @php $techPhoto = $requestData->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $requestData->assignedTechnician->getFirstMediaUrl('avatar'); @endphp
+                                    @php $techPhoto = media_url($requestData->assignedTechnician->getFirstMediaUrl('avatar', 'thumb') ?: $requestData->assignedTechnician->getFirstMediaUrl('avatar')); @endphp
                                     @if(!empty($techPhoto))
                                         <img src="{{ $techPhoto }}"
                                              alt="{{ $requestData->assignedTechnician->user->name }}"
@@ -257,13 +250,23 @@
                         </div>
 
                         @php
-                            $hasTech    = !is_null($requestData->assigned_technician_id);
-                            $hasPrice   = $hasTech
-                                          && !empty($requestData->proposed_price)
-                                          && (float)$requestData->proposed_price > 0;
+                            // Resolve pricing defensively: prefer the request's own
+                            // proposed_price, but fall back to the accepted proposal
+                            // so older records (price not copied) still display correctly.
+                            $acceptedProposal = $requestData->proposals->firstWhere('status', 'accepted');
+                            $resolvedServicePrice = ($requestData->proposed_price && (float)$requestData->proposed_price > 0)
+                                ? $requestData->proposed_price
+                                : ($acceptedProposal->proposed_price ?? null);
+                            $resolvedItemsPrice = ($requestData->proposed_price && (float)$requestData->proposed_price > 0)
+                                ? (float)($requestData->total_items_price ?? 0)
+                                : (float)($acceptedProposal ? $acceptedProposal->items->sum('total_price') : 0);
+                            $resolvedPriceNotes = $requestData->price_notes ?: ($acceptedProposal->price_notes ?? null);
 
-                            $serviceCost  = $hasPrice ? (float)$requestData->proposed_price : 0.00;
-                            $itemsCost    = $hasPrice ? (float)($requestData->total_items_price ?? 0) : 0.00;
+                            $hasTech    = !is_null($requestData->assigned_technician_id);
+                            $hasPrice   = $hasTech && !empty($resolvedServicePrice) && (float)$resolvedServicePrice > 0;
+
+                            $serviceCost  = $hasPrice ? (float)$resolvedServicePrice : 0.00;
+                            $itemsCost    = $hasPrice ? $resolvedItemsPrice : 0.00;
                             $totalAmount  = $serviceCost + $itemsCost;
                         @endphp
 
@@ -338,11 +341,11 @@
                                 </span>
                             </div>
 
-                            @if($requestData->price_notes)
+                            @if($resolvedPriceNotes)
                                 <div class="mb-3 px-3 py-2 rounded-3"
                                      style="background: rgba(255,255,255,0.07); font-size: 12.5px; color: rgba(255,255,255,0.75);">
                                     <i class="fas fa-comment-dots me-1 text-warning"></i>
-                                    <strong>ملاحظة الفني:</strong> {{ $requestData->price_notes }}
+                                    <strong>ملاحظة الفني:</strong> {{ $resolvedPriceNotes }}
                                 </div>
                             @endif
 
@@ -523,26 +526,56 @@
                         </div>
                     </div>
 
-                    <!-- 2. Live Map Card -->
-                    <div class="glass-panel mb-4" style="overflow: hidden; border-radius: 20px; position: relative; padding: 0;">
-                        <!-- Map Container -->
-                        <div id="liveTrackingMap" style="height: 320px; width: 100%; display: block; position: relative; z-index: 1; border-radius: 0;"></div>
+                    <!-- 2. Live Map Card (Google Maps) -->
+                    @php
+                        $gmapsKey = trim((string) config('services.google.maps.key'));
+                        $hasCustomerCoords = $requestData->latitude && $requestData->longitude;
 
+                        // صيغة الاستعلام لنسخة الـ Embed (بدون مفتاح) ورابط "فتح في خرائط جوجل"
+                        if ($hasCustomerCoords) {
+                            $mapQuery = $requestData->latitude . ',' . $requestData->longitude;
+                            $mapZoom  = '16';
+                        } elseif ($requestData->address) {
+                            $mapQuery = $requestData->address;
+                            $mapZoom  = '15';
+                        } else {
+                            $mapQuery = 'مصر';
+                            $mapZoom  = '6';
+                        }
+                        $gmapsEmbed = 'https://maps.google.com/maps?q=' . urlencode($mapQuery) . '&z=' . $mapZoom . '&hl=ar&output=embed';
+                        $gmapsLink  = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapQuery);
+
+                        // هل نُظهر دبوس الفني والمسار (وضع التتبّع التفاعلي فقط)
+                        $showTechOnMap = $requestData->assignedTechnician
+                            && in_array($requestData->status, ['in_progress', 'approved']);
+                    @endphp
+                    <div class="glass-panel mb-4" style="overflow: hidden; border-radius: 20px; position: relative; padding: 0;">
                         <!-- Floating Info Badge -->
                         <div class="map-floating-distance">
-                            @if($requestData->assignedTechnician && in_array($requestData->status, ['in_progress', 'approved']))
+                            @if($gmapsKey && $showTechOnMap)
                                 <i class="fas fa-truck-moving text-warning me-1"></i>
-                                <span>الفني في الطريق: <strong>2.5 كم</strong> (حوالي 15 دقيقة)</span>
+                                <span>تتبّع مباشر لمسار الفني</span>
                             @else
                                 <i class="fas fa-map-marker-alt text-primary me-1"></i>
                                 <span>موقع تقديم الخدمة</span>
                             @endif
                         </div>
 
-                        <!-- Expand Button -->
-                        <button type="button" class="map-expand-btn" onclick="toggleMapFullscreen()" title="تكبير الخريطة">
-                            <i class="fas fa-expand"></i>
-                        </button>
+                        <!-- Open in Google Maps -->
+                        <a href="{{ $gmapsLink }}" target="_blank" rel="noopener" class="map-expand-btn" title="فتح في خرائط جوجل">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a>
+
+                        @if($gmapsKey)
+                            <!-- Interactive Google Maps (JS API) -->
+                            <div id="liveTrackingMap" style="height: 360px; width: 100%; display: block;"></div>
+                        @else
+                            <!-- Google Maps Embed (no API key required) -->
+                            <iframe src="{{ $gmapsEmbed }}"
+                                    style="height: 340px; width: 100%; border: 0; display: block;"
+                                    loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                                    title="خريطة موقع الطلب"></iframe>
+                        @endif
                     </div>
 
                     <!-- 3. Service Details Card -->
@@ -605,8 +638,8 @@
                                     <div class="row g-2">
                                         @foreach ($requestData->getMedia('requests') as $media)
                                             <div class="col-4 col-sm-3">
-                                                <a href="{{ $media->getUrl() }}" target="_blank" class="d-block attached-img-thumb rounded-3 overflow-hidden border">
-                                                    <img src="{{ $media->getUrl() }}" class="img-fluid w-100 h-100 object-fit-cover" alt="مرفق الطلب">
+                                                <a href="{{ media_url($media) }}" target="_blank" class="d-block attached-img-thumb rounded-3 overflow-hidden border">
+                                                    <img src="{{ media_url($media) }}" class="img-fluid w-100 h-100 object-fit-cover" alt="مرفق الطلب">
                                                 </a>
                                             </div>
                                         @endforeach
@@ -1006,19 +1039,20 @@
 
         .map-expand-btn {
             position: absolute;
-            bottom: 16px;
-            left: 16px;
+            top: 14px;
+            right: 14px;
             width: 36px;
             height: 36px;
             border-radius: 50%;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             color: #0f172a;
+            text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
             z-index: 400;
             transition: all 0.2s ease;
         }
@@ -1173,117 +1207,107 @@
 @endpush
 
 @push('scripts')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    @php
+        $gmapsKey = trim((string) config('services.google.maps.key'));
+        $mapCustomer = [
+            'lat' => $requestData->latitude ? (float) $requestData->latitude : null,
+            'lng' => $requestData->longitude ? (float) $requestData->longitude : null,
+        ];
+        $mapAddress = $requestData->address ?? '';
+        $mapTech = [
+            'show' => $showTechOnMap,
+            'lat'  => ($requestData->assignedTechnician && $requestData->assignedTechnician->latitude) ? (float) $requestData->assignedTechnician->latitude : null,
+            'lng'  => ($requestData->assignedTechnician && $requestData->assignedTechnician->longitude) ? (float) $requestData->assignedTechnician->longitude : null,
+            'name' => $requestData->assignedTechnician?->user?->name ?? 'الفني',
+        ];
+    @endphp
+    @if($gmapsKey)
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        function initRequestMap() {
+            const el = document.getElementById('liveTrackingMap');
+            if (!el) return;
 
-            // ---- الإحداثيات: مصر (القاهرة) كافتراضي إذا لم تُحفظ ----
-            const userLat = parseFloat('{{ $requestData->latitude ?? "30.0444" }}') || 30.0444;
-            const userLng = parseFloat('{{ $requestData->longitude ?? "31.2357" }}') || 31.2357;
+            const customer = @json($mapCustomer);
+            const address = @json($mapAddress);
+            const tech = @json($mapTech);
 
-            // ---- إنشاء الخريطة ----
-            const mapEl = document.getElementById('liveTrackingMap');
-            if (!mapEl) return;
+            const EG = { lat: 26.8206, lng: 30.8025 };
+            const hasCoords = customer.lat !== null && customer.lng !== null;
 
-            const map = L.map('liveTrackingMap', {
+            const map = new google.maps.Map(el, {
+                center: hasCoords ? { lat: customer.lat, lng: customer.lng } : EG,
+                zoom: hasCoords ? 14 : 6,
+                disableDefaultUI: true,
                 zoomControl: true,
-                attributionControl: false,
-                scrollWheelZoom: true
-            }).setView([userLat, userLng], 14);
-
-            // ---- طبقة التايلز (OpenStreetMap) ----
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            // ---- أيقونة موقع العميل ----
-            const userIcon = L.divIcon({
-                className: '',
-                html: `<div style="
-                    background: #072540;
-                    color: #fff;
-                    width: 38px;
-                    height: 38px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 3px solid #fff;
-                    box-shadow: 0 4px 12px rgba(7,37,64,0.4);
-                "><i class="fas fa-home" style="font-size:16px;"></i></div>`,
-                iconSize: [38, 38],
-                iconAnchor: [19, 19],
-                popupAnchor: [0, -22]
+                clickableIcons: false,
+                gestureHandling: 'cooperative',
             });
 
-            L.marker([userLat, userLng], { icon: userIcon })
-                .addTo(map)
-                .bindPopup('<strong>📍 موقع تقديم الخدمة</strong>', { maxWidth: 160 })
-                .openPopup();
+            const homeIcon = {
+                path: google.maps.SymbolPath.CIRCLE, scale: 11,
+                fillColor: '#072540', fillOpacity: 1,
+                strokeColor: '#ffffff', strokeWeight: 4,
+            };
+            const truckIcon = {
+                path: google.maps.SymbolPath.CIRCLE, scale: 11,
+                fillColor: '#ff8a00', fillOpacity: 1,
+                strokeColor: '#ffffff', strokeWeight: 4,
+            };
 
-            @if($requestData->assignedTechnician && in_array($requestData->status, ['in_progress', 'approved']))
-                // ---- موقع الفني: إذا كان محفوظاً في قاعدة البيانات نستخدمه، وإلا نحدد موقعاً قريباً منه تلقائياً ----
-                const realTechLat = parseFloat('{{ $requestData->assignedTechnician->latitude ?? "" }}');
-                const realTechLng = parseFloat('{{ $requestData->assignedTechnician->longitude ?? "" }}');
+            function drawRoute() {
+                if (!tech.show || customer.lat === null || customer.lng === null) return;
+                const tLat = tech.lat !== null ? tech.lat : customer.lat + 0.012;
+                const tLng = tech.lng !== null ? tech.lng : customer.lng + 0.009;
+                const techPos = { lat: tLat, lng: tLng };
 
-                const techLat = (!isNaN(realTechLat) && realTechLat !== 0) ? realTechLat : (userLat + 0.012);
-                const techLng = (!isNaN(realTechLng) && realTechLng !== 0) ? realTechLng : (userLng + 0.009);
+                const tm = new google.maps.Marker({ position: techPos, map, icon: truckIcon, title: tech.name, animation: google.maps.Animation.DROP });
+                new google.maps.InfoWindow({ content: '<strong>🔧 ' + tech.name + '</strong><br><small>في الطريق إليك</small>' }).open(map, tm);
 
-                const techIcon = L.divIcon({
-                    className: '',
-                    html: `<div style="
-                        background: #ff9500;
-                        color: #fff;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border: 3px solid #fff;
-                        box-shadow: 0 4px 14px rgba(255,149,0,0.5);
-                    "><i class="fas fa-truck-moving" style="font-size:16px;"></i></div>`,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20],
-                    popupAnchor: [0, -24]
+                const mid = { lat: (tLat + customer.lat) / 2 + 0.002, lng: (tLng + customer.lng) / 2 - 0.002 };
+                new google.maps.Polyline({
+                    path: [techPos, mid, { lat: customer.lat, lng: customer.lng }],
+                    geodesic: true, strokeColor: '#072540', strokeOpacity: 0.85, strokeWeight: 4, map,
                 });
-
-                L.marker([techLat, techLng], { icon: techIcon })
-                    .addTo(map)
-                    .bindPopup('<strong>🔧 {{ $requestData->assignedTechnician->user->name ?? "الفني" }}</strong><br><small>في الطريق إليك</small>');
-
-                // ---- خط المسار بين الفني والعميل ----
-                const midLat = (techLat + userLat) / 2 + 0.002;
-                const midLng = (techLng + userLng) / 2 - 0.002;
-                L.polyline(
-                    [[techLat, techLng], [midLat, midLng], [userLat, userLng]],
-                    { color: '#072540', weight: 4, opacity: 0.85, dashArray: '8, 8' }
-                ).addTo(map);
-
-                // اضبط زوم وحدود الخريطة تلقائياً لتظهر النقطتين بوضوح
-                map.fitBounds([[userLat, userLng], [techLat, techLng]], { padding: [50, 50] });
-            @endif
-
-            // ---- مهم: أعِد حساب الحجم بعد الرسم ----
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 200);
-
-            window.liveMapInstance = map;
-        });
-
-        // ---- تكبير الخريطة ----
-        function toggleMapFullscreen() {
-            const mapContainer = document.getElementById('liveTrackingMap');
-            if (!document.fullscreenElement) {
-                mapContainer.requestFullscreen && mapContainer.requestFullscreen();
-            } else {
-                document.exitFullscreen && document.exitFullscreen();
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend(techPos);
+                bounds.extend({ lat: customer.lat, lng: customer.lng });
+                map.fitBounds(bounds, 60);
             }
-            setTimeout(() => {
-                window.liveMapInstance && window.liveMapInstance.invalidateSize();
-            }, 400);
+
+            let customerMarker = null;
+            function placeCustomer(lat, lng) {
+                customer.lat = lat; customer.lng = lng;
+                if (customerMarker) {
+                    customerMarker.setPosition({ lat: lat, lng: lng });
+                } else {
+                    customerMarker = new google.maps.Marker({
+                        position: { lat: lat, lng: lng }, map, icon: homeIcon,
+                        title: 'موقع تقديم الخدمة', animation: google.maps.Animation.DROP,
+                    });
+                    new google.maps.InfoWindow({ content: '<strong>📍 موقع تقديم الخدمة</strong>' }).open(map, customerMarker);
+                }
+                map.setCenter({ lat: lat, lng: lng });
+                map.setZoom(14);
+                drawRoute();
+            }
+
+            if (hasCoords) {
+                placeCustomer(customer.lat, customer.lng);
+            } else if (address) {
+                new google.maps.Geocoder().geocode({ address: address, componentRestrictions: { country: 'EG' } }, function (res, status) {
+                    if (status === 'OK' && res && res[0]) {
+                        placeCustomer(res[0].geometry.location.lat(), res[0].geometry.location.lng());
+                    } else {
+                        drawRoute();
+                    }
+                });
+            } else {
+                drawRoute();
+            }
         }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ $gmapsKey }}&callback=initRequestMap&language=ar&region=EG&loading=async" async defer></script>
+    @else
+    {{-- لا يوجد مفتاح: الخريطة تعمل عبر Google Maps Embed (iframe) بدون أي JavaScript --}}
+    @endif
 @endpush
