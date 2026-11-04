@@ -13,7 +13,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Ensure global helper functions are always available, even if Composer's
+        // autoload "files" map is stale on a deployed host (e.g. media_url undefined).
+        if (!function_exists('media_url')) {
+            $helpers = app_path('Helpers/helpers.php');
+            if (is_file($helpers)) {
+                require_once $helpers;
+            }
+        }
     }
 
     /**
