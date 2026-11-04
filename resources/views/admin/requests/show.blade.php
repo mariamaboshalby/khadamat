@@ -156,9 +156,9 @@
                         <div class="row g-3">
                             @foreach ($requestModel->getMedia('requests') as $media)
                                 <div class="col-lg-3 col-md-4 col-6">
-                                    <a href="{{ $media->getUrl() }}" target="_blank"
+                                    <a href="{{ media_url($media) }}" target="_blank"
                                         class="d-block overflow-hidden rounded" style="aspect-ratio: 1/1;">
-                                        <img src="{{ $media->getUrl() }}" class="img-fluid w-100 h-100"
+                                        <img src="{{ media_url($media) }}" class="img-fluid w-100 h-100"
                                             style="object-fit: cover; transition: transform 0.3s ease;"
                                             onmouseover="this.style.transform='scale(1.05)'"
                                             onmouseout="this.style.transform='scale(1)'" alt="صورة الطلب">

@@ -68,7 +68,7 @@ use Illuminate\Support\Str;
                             <div class="mb-4">
                                 <div class="grid grid-cols-3 gap-2">
                                     @foreach($request->media->take(3) as $media)
-                                        <img src="{{ $media->getUrl() }}" alt="Request Image" class="rounded w-full h-20 object-cover">
+                                        <img src="{{ media_url($media) }}" alt="Request Image" class="rounded w-full h-20 object-cover">
                                     @endforeach
                                     @if($request->media->count() > 3)
                                         <div class="bg-gray-200 rounded flex items-center justify-center">

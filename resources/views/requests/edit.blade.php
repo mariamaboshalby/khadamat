@@ -2,18 +2,17 @@
 
 @section('title', 'تعديل الطلب')
 
-@section('content')
-
-<!-- Mobile Header -->
-<div class="app-header glass d-md-none">
-    <a href="{{ route('dashboard') }}" class="header-icon-btn">
+@section('mobile_header')
+    <a href="{{ route('dashboard') }}" class="header-icon-btn text-decoration-none">
         <i class="fas fa-arrow-right"></i>
     </a>
-    <div class="app-logo">
+    <div class="app-logo fw-bold">
         <i class="fas fa-plus-circle me-1"></i> طلب جديد
     </div>
-    <div class="header-icon-btn"></div>
-</div>
+    <div class="header-icon-btn" style="visibility: hidden;"></div>
+@endsection
+
+@section('content')
 
 <!-- Content -->
 <div class="app-content fade-in">
@@ -104,7 +103,7 @@
                     @foreach($requestData->getMedia('requests') as $media)
                     <div class="col-4 col-md-3" id="media-{{ $media->id }}">
                         <div class="position-relative">
-                            <img src="{{ $media->getUrl() }}" class="img-fluid rounded" style="aspect-ratio: 1; object-fit: cover;">
+                            <img src="{{ media_url($media) }}" class="img-fluid rounded" style="aspect-ratio: 1; object-fit: cover;">
                             <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" 
                                     onclick="deleteMedia({{ $media->id }})">
                                 <i class="fas fa-times"></i>

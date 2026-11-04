@@ -14,7 +14,7 @@
      data-category="spec-{{ $tech->specialization_id ?? 'other' }}">
     <div class="technician-card-box">
         <div class="tech-image-wrap">
-            @php $techPhoto = $tech->getFirstMediaUrl('avatar', 'thumb') ?: $tech->getFirstMediaUrl('avatar'); @endphp
+            @php $techPhoto = media_url($tech->getFirstMediaUrl('avatar', 'thumb') ?: $tech->getFirstMediaUrl('avatar')); @endphp
             @if(!empty($techPhoto))
                 <img src="{{ $techPhoto }}"
                      alt="{{ $tech->full_name }}"

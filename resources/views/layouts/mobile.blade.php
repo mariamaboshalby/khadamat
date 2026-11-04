@@ -127,8 +127,13 @@
         .site-logo {
             height: 48px;
             width: auto;
+            max-width: 120px;
             object-fit: contain;
             transition: transform 0.2s;
+        }
+
+        .app-header .site-logo {
+            height: 40px;
         }
 
         .site-logo:hover {
@@ -227,10 +232,178 @@
             transform: scale(0.95);
         }
 
-        .site-logo {
-            height: 55px;
-            width: 100px;
+        /* Desktop notification bell */
+        .notif-bell {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 17px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
+
+        .notif-bell:hover {
+            background: #eef5f9;
+            color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            background: #dc2626;
+            color: #fff;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 18px;
+            text-align: center;
+            border: 2px solid #fff;
+        }
+
+        /* Notification dropdown */
+        .notif-wrap { position: relative; }
+
+        .notif-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            width: 360px;
+            max-width: calc(100vw - 32px);
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.18);
+            overflow: hidden;
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: opacity .18s ease, transform .18s ease, visibility .18s;
+        }
+
+        .notif-panel.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .notif-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+
+        .notif-panel-title { font-weight: 800; color: var(--text-primary); font-size: 15px; }
+
+        .notif-unread-pill {
+            background: rgba(11, 95, 138, .1);
+            color: var(--primary-color);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 30px;
+        }
+
+        .notif-panel-body { max-height: 340px; overflow-y: auto; }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background .15s;
+            position: relative;
+        }
+
+        .notif-item:hover { background: #f8fafc; }
+        .notif-item:last-child { border-bottom: none; }
+
+        .notif-item-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #eef5f9;
+            color: var(--primary-color);
+            font-size: 15px;
+        }
+
+        .notif-item.is-read .notif-item-icon { background: #f1f5f9; color: var(--text-muted); }
+
+        .notif-item-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+        .notif-item-msg {
+            font-size: 13.5px;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notif-item.is-read .notif-item-msg { color: var(--text-secondary); font-weight: 500; }
+
+        .notif-item-time { font-size: 11.5px; color: var(--text-muted); }
+
+        .notif-item-dot {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+        }
+
+        .notif-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 34px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .notif-empty i { font-size: 26px; opacity: .5; }
+
+        .notif-panel-foot {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .notif-panel-foot:hover { background: #eef5f9; }
 
         /* Bottom Navigation (Mobile Only) */
         .bottom-nav {
@@ -386,10 +559,6 @@
                         class="desktop-nav-link {{ request()->is('/') ? 'active' : '' }}">الرئيسية</a>
                     <a href="{{ route('services.index') }}"
                         class="desktop-nav-link {{ request()->is('services*') ? 'active' : '' }}">الخدمات</a>
-                    <a href="{{ url('/#how-it-works') }}"
-                        class="desktop-nav-link">كيف نعمل؟</a>
-                    <a href="{{ url('/#why-us') }}"
-                        class="desktop-nav-link">لماذا نحن</a>
                     <a href="{{ route('technicians.index') }}"
                         class="desktop-nav-link {{ request()->routeIs('technicians*') ? 'active' : '' }}">نخبة الفنيين</a>
                     <a href="{{ route('offers.index') }}"
@@ -415,6 +584,43 @@
                     </a>
 
                     @auth
+                        @php
+                            $navUnread = auth()->user()->unreadNotifications()->count();
+                            $navNotifs = auth()->user()->notifications()->latest()->take(5)->get();
+                        @endphp
+                        <div class="notif-wrap">
+                            <button type="button" class="notif-bell" id="notifBellBtn" aria-haspopup="true" aria-expanded="false" title="الإشعارات">
+                                <i class="fas fa-bell"></i>
+                                @if ($navUnread > 0)
+                                    <span class="notif-badge js-notif-count">{{ $navUnread > 99 ? '99+' : $navUnread }}</span>
+                                @endif
+                            </button>
+                            <div class="notif-panel" id="notifPanel">
+                                <div class="notif-panel-head">
+                                    <span class="notif-panel-title">الإشعارات</span>
+                                    @if ($navUnread > 0)
+                                        <span class="notif-unread-pill">{{ $navUnread }} غير مقروء</span>
+                                    @endif
+                                </div>
+                                <div class="notif-panel-body">
+                                    @forelse ($navNotifs as $n)
+                                        <a href="{{ $n->data['action_url'] ?? route('notifications.index') }}"
+                                           class="notif-item {{ $n->read_at ? 'is-read' : 'is-unread' }}"
+                                           data-notif-id="{{ $n->id }}">
+                                            <span class="notif-item-icon"><i class="fas {{ $n->data['icon'] ?? 'fa-bell' }}"></i></span>
+                                            <span class="notif-item-text">
+                                                <span class="notif-item-msg">{{ $n->data['message'] ?? 'إشعار جديد' }}</span>
+                                                <span class="notif-item-time">{{ $n->created_at->diffForHumans() }}</span>
+                                            </span>
+                                            @if (!$n->read_at)<span class="notif-item-dot"></span>@endif
+                                        </a>
+                                    @empty
+                                        <div class="notif-empty"><i class="fas fa-bell-slash"></i><span>لا توجد إشعارات</span></div>
+                                    @endforelse
+                                </div>
+                                <a href="{{ route('notifications.index') }}" class="notif-panel-foot">عرض الكل</a>
+                            </div>
+                        </div>
                         <a href="{{ route('profile.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 fw-bold" title="حسابي">
                             <i class="fas fa-user-circle me-1"></i> حسابي
                         </a>
@@ -435,26 +641,33 @@
     </div>
 
 
-    <!-- Mobile Header (Mobile Only) -->
+    <!-- Mobile Header (Mobile Only) - pages can override via @section('mobile_header') -->
     <div class="app-header d-md-none">
-        <a href="{{ route('home') }}">
-            <img src="{{ asset('images/logo.png') }}" alt="خدمات" class="site-logo">
-        </a>
-        <div class="d-flex align-items-center gap-2">
-            @auth
-                <a href="{{ route('notifications.index') }}" class="header-icon-btn position-relative" title="الإشعارات">
-                    <i class="fas fa-bell fs-5"></i>
-                    @php $unreadCount = auth()->user()->unreadNotifications()->count(); @endphp
-                    @if ($unreadCount > 0)
-                        <span id="notification-badge"
-                            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 10px; min-width: 18px; padding: 3px 5px;">
-                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
-                        </span>
-                    @endif
+        @hasSection('mobile_header')
+            @yield('mobile_header')
+        @else
+            <a href="{{ route('home') }}">
+                <img src="{{ asset('images/logo.png') }}" alt="خدمتي" class="site-logo">
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="{{ route('requests.create') }}" class="btn-brand-orange py-1 px-3 text-decoration-none" style="font-size: 13px;">
+                    <i class="fas fa-plus"></i> طلب
                 </a>
-            @endauth
-        </div>
+                @auth
+                    <a href="{{ route('notifications.index') }}" class="header-icon-btn position-relative text-decoration-none" title="الإشعارات">
+                        <i class="fas fa-bell fs-5"></i>
+                        @php $unreadCount = auth()->user()->unreadNotifications()->count(); @endphp
+                        @if ($unreadCount > 0)
+                            <span id="notification-badge"
+                                class="js-notif-count position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 10px; min-width: 18px; padding: 3px 5px;">
+                                {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                            </span>
+                        @endif
+                    </a>
+                @endauth
+            </div>
+        @endif
     </div>
 
     <div class="app-container">
@@ -497,10 +710,10 @@
                     </a>
                 @endif
             @else
-                <a href="{{ route('requests.create') }}"
-                    class="nav-item {{ request()->is('requests*') ? 'active' : '' }}">
-                    <i class="fas fa-plus-circle nav-icon"></i>
-                    <span class="nav-label">طلب</span>
+                <a href="{{ route('technicians.index') }}"
+                    class="nav-item {{ request()->routeIs('technicians*') ? 'active' : '' }}">
+                    <i class="fas fa-users nav-icon"></i>
+                    <span class="nav-label">فنيين</span>
                 </a>
             @endauth
             <a href="{{ route('offers.index') }}" class="nav-item {{ request()->is('offers*') ? 'active' : '' }}">
@@ -521,6 +734,53 @@
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Notification dropdown -->
+    <script>
+        (function() {
+            const bell = document.getElementById('notifBellBtn');
+            const panel = document.getElementById('notifPanel');
+            if (!bell || !panel) return;
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            function closePanel() { panel.classList.remove('open'); bell.setAttribute('aria-expanded', 'false'); }
+            function togglePanel(e) { e.stopPropagation(); const open = panel.classList.toggle('open'); bell.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+
+            bell.addEventListener('click', togglePanel);
+            document.addEventListener('click', function(e) { if (!panel.contains(e.target) && e.target !== bell) closePanel(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePanel(); });
+
+            function decrementBadges() {
+                document.querySelectorAll('.js-notif-count').forEach(function(b) {
+                    let n = parseInt((b.textContent || '0').replace('+', '')) || 0;
+                    n = Math.max(0, n - 1);
+                    if (n === 0) { b.style.display = 'none'; } else { b.textContent = n > 99 ? '99+' : n; }
+                });
+            }
+
+            panel.querySelectorAll('.notif-item').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    if (this.classList.contains('is-read')) return;
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+                    const id = this.dataset.notifId;
+                    const el = this;
+                    const done = function() {
+                        el.classList.remove('is-unread'); el.classList.add('is-read');
+                        const dot = el.querySelector('.notif-item-dot'); if (dot) dot.remove();
+                        decrementBadges();
+                        window.location.href = url;
+                    };
+                    if (csrf) {
+                        fetch('/notifications/' + id + '/read', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' }
+                        }).finally(done);
+                    } else { done(); }
+                });
+            });
+        })();
+    </script>
 
     @stack('scripts')
 </body>

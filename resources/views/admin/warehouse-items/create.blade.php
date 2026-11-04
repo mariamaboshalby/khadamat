@@ -3,136 +3,109 @@
 @section('title', 'إضافة صنف جديد')
 
 @section('content')
-<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-    <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center;">
+<div class="wi-wrap">
+    <div class="wi-head">
         <div>
-            <h1 style="font-size: 32px; margin: 0 0 8px; color: #2d3748; font-weight: 700;">إضافة صنف جديد للمخزن</h1>
-            <p style="color: #718096; margin: 0; font-size: 16px;">أدخل بيانات الصنف</p>
+            <h1>إضافة صنف جديد للمخزن</h1>
+            <p>أدخل بيانات الصنف</p>
         </div>
-        <a href="{{ route('admin.warehouse-items.index') }}" 
-           style="background: white; border: 1px solid #e2e8f0; color: #4a5568; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
-           onmouseover="this.style.background='#f7fafc'; this.style.transform='translateY(-1px)';"
-           onmouseout="this.style.background='white'; this.style.transform='translateY(0)';">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="{{ route('admin.warehouse-items.index') }}" class="wi-back">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7"/>
             </svg>
             عودة للقائمة
         </a>
     </div>
-    
-    <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 16px;">
-        <div style="background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); padding: 32px; color: white;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 style="font-size: 24px; font-weight: 700; margin: 0 0 6px;">بيانات الصنف</h3>
-                    <p style="margin: 0; opacity: 0.9; font-size: 15px;">يرجى ملء جميع الحقول المطلوبة بدقة</p>
-                </div>
+
+    <div class="wi-card">
+        <div class="wi-banner">
+            <div class="wi-banner-ic">
+                <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+            </div>
+            <div>
+                <h3>بيانات الصنف</h3>
+                <p>يرجى ملء جميع الحقول المطلوبة بدقة</p>
             </div>
         </div>
 
-        <div style="padding: 40px;">
+        <div class="wi-body">
             <form method="POST" action="{{ route('admin.warehouse-items.store') }}" enctype="multipart/form-data">
             @csrf
-            
-            <div class="mb-3">
+
+            <div class="wi-field">
                 <label class="form-label">اسم الصنف</label>
                 <input type="text" name="name" value="{{ old('name') }}" required class="form-control"
                     placeholder="مثال: مفتاح كهرباء، أنبوب PVC">
-                @error('name')
-                    <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                @enderror
+                @error('name')<p class="wi-err">{{ $message }}</p>@enderror
             </div>
-            
-            <div class="mb-3">
+
+            <div class="wi-field">
                 <label class="form-label">الوصف (اختياري)</label>
                 <textarea name="description" rows="3" class="form-control"
                     placeholder="وصف الصنف...">{{ old('description') }}</textarea>
-                @error('description')
-                    <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                @enderror
+                @error('description')<p class="wi-err">{{ $message }}</p>@enderror
             </div>
-            
-            <div class="mb-3">
+
+            <div class="wi-field">
                 <label class="form-label">صورة المنتج (اختياري)</label>
                 <input type="file" name="image" accept="image/*" class="form-control" onchange="previewImage(event)">
-                @error('image')
-                    <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                @enderror
+                @error('image')<p class="wi-err">{{ $message }}</p>@enderror
                 <div class="mt-2 d-flex align-items-center gap-3">
-                    <img id="imagePreview" src="" alt="Preview" style="display:none; width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <img id="imagePreview" src="" alt="Preview" style="display:none; width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #e6ecf2;">
                     <span id="imageName" class="text-muted small"></span>
                 </div>
             </div>
 
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
+            <div class="wi-row">
+                <div>
                     <label class="form-label">الكمية</label>
                     <input type="number" name="quantity" value="{{ old('quantity', 0) }}" required min="0" class="form-control">
-                    @error('quantity')
-                        <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                    @enderror
+                    @error('quantity')<p class="wi-err">{{ $message }}</p>@enderror
                 </div>
-                <div class="col-md-6">
+                <div>
                     <label class="form-label">الوحدة</label>
                     <input type="text" name="unit" value="{{ old('unit', 'قطعة') }}" required class="form-control"
                         placeholder="قطعة، متر، كيلو، لتر">
-                    @error('unit')
-                        <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                    @enderror
+                    @error('unit')<p class="wi-err">{{ $message }}</p>@enderror
                 </div>
             </div>
-            <div class="row g-3 mb-3">
-                <div class="col-md-6">
+
+            <div class="wi-row">
+                <div>
                     <label class="form-label">السعر (جنيه)</label>
                     <input type="number" name="price" value="{{ old('price', 0) }}" required min="0" step="0.01" class="form-control">
-                    @error('price')
-                        <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                    @enderror
+                    @error('price')<p class="wi-err">{{ $message }}</p>@enderror
                 </div>
-                <div class="col-md-6">
+                <div>
                     <label class="form-label">الحد الأدنى للتنبيه</label>
                     <input type="number" name="min_quantity" value="{{ old('min_quantity', 10) }}" required min="0" class="form-control">
-                    @error('min_quantity')
-                        <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                    @enderror
+                    @error('min_quantity')<p class="wi-err">{{ $message }}</p>@enderror
                 </div>
             </div>
-            <div class="mb-3">
+
+            <div class="wi-field">
                 <label class="form-label">الفئة (اختياري)</label>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="input-group-text"><i class="fa-solid fa-layer-group"></i></span>
+                <div class="wi-cat-row">
+                    <span class="wi-cat-ic"><i class="fa-solid fa-layer-group"></i></span>
                     <select name="category" id="categorySelect" class="form-select" onchange="updateSelectedSpecName(this)">
                         <option value="">اختر الفئة...</option>
                         @foreach($categories as $id => $name)
                             <option value="{{ $id }}" {{ old('category') == $id ? 'selected' : '' }}>{{ $name }}</option>
                         @endforeach
                     </select>
-                    <a href="{{ route('admin.specializations.create') }}" class="btn btn-outline-primary" title="إضافة تخصص" target="_blank">
+                    <a href="{{ route('admin.specializations.create') }}" class="wi-cat-add" title="إضافة تخصص" target="_blank">
                         <i class="fa-solid fa-plus"></i>
                     </a>
                 </div>
                 <small class="form-text text-muted mt-1">التخصص المحدد: <span id="selectedSpecName">لم يتم الاختيار</span></small>
-                @error('category')
-                    <p style="color: #e53e3e; font-size: 14px; margin-top: 4px;">{{ $message }}</p>
-                @enderror
+                @error('category')<p class="wi-err">{{ $message }}</p>@enderror
             </div>
-            
-            <div style="padding-top: 32px; border-top: 2px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 16px;">
-                <a href="{{ route('admin.warehouse-items.index') }}"
-                    style="padding: 14px 32px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; color: #4a5568; text-decoration: none; font-weight: 700; transition: all 0.3s ease; font-size: 16px;"
-                    onmouseover="this.style.background='#f7fafc'; this.style.borderColor='#cbd5e0'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
-                    onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                    إلغاء
-                </a>
-                <button type="submit"
-                    style="padding: 14px 32px; border-radius: 10px; border: none; background: linear-gradient(135deg, #2a6592 0%, #3498db 50%, #f39c12 100%); color: white; font-weight: 700; transition: all 0.3s ease; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(42, 101, 146, 0.3);"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(42, 101, 146, 0.4)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(42, 101, 146, 0.3)';">
+
+            <div class="wi-actions">
+                <a href="{{ route('admin.warehouse-items.index') }}" class="wi-cancel">إلغاء</a>
+                <button type="submit" class="wi-submit">
                     <i class="fa-solid fa-plus me-1"></i> إضافة الصنف
                 </button>
             </div>
@@ -140,6 +113,50 @@
         </div>
     </div>
 </div>
+
+<style>
+    .wi-wrap { max-width: 820px; margin: 0 auto; padding: 10px 14px 30px; }
+
+    .wi-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .wi-head h1 { font-size: 21px; margin: 0 0 2px; color: #072540; font-weight: 800; }
+    .wi-head p { color: #64748b; margin: 0; font-size: 13px; }
+    .wi-back { background: #fff; border: 1px solid #e6ecf2; color: #475569; padding: 9px 16px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+    .wi-back:hover { background: #f7fafc; color: #0b5f8a; border-color: #cbd5e0; }
+
+    .wi-card { background: #fff; border: 1px solid #e6ecf2; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 14px rgba(7, 37, 64, 0.05); }
+
+    .wi-banner { background: linear-gradient(135deg, #0b5f8a 0%, #188ec9 100%); padding: 16px 20px; color: #fff; display: flex; align-items: center; gap: 14px; }
+    .wi-banner-ic { width: 44px; height: 44px; background: rgba(255,255,255,0.18); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .wi-banner h3 { font-size: 17px; font-weight: 700; margin: 0 0 2px; }
+    .wi-banner p { margin: 0; opacity: 0.9; font-size: 13px; }
+
+    .wi-body { padding: 20px; }
+    .wi-field { margin-bottom: 14px; }
+    .wi-field .form-label, .wi-row label { font-size: 13.5px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+    .wi-body .form-control, .wi-body .form-select { border-radius: 10px; border-color: #e6ecf2; padding: 10px 12px; font-size: 14px; }
+    .wi-body .form-control:focus, .wi-body .form-select:focus { border-color: #188ec9; box-shadow: 0 0 0 3px rgba(24, 142, 201, 0.12); }
+    .wi-err { color: #e03131; font-size: 13px; margin: 4px 0 0; }
+
+    .wi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+    .wi-cat-row { display: flex; align-items: stretch; gap: 8px; }
+    .wi-cat-ic { display: flex; align-items: center; justify-content: center; width: 42px; border: 1px solid #e6ecf2; border-radius: 10px; background: #f8fafc; color: #0b5f8a; }
+    .wi-cat-row .form-select { flex: 1; }
+    .wi-cat-add { display: flex; align-items: center; justify-content: center; width: 42px; border: 1px solid #188ec9; color: #0b5f8a; border-radius: 10px; background: #fff; transition: all 0.2s; }
+    .wi-cat-add:hover { background: #0b5f8a; color: #fff; }
+
+    .wi-actions { padding-top: 16px; border-top: 1px solid #eef2f6; display: flex; justify-content: flex-end; gap: 12px; }
+    .wi-cancel { padding: 10px 22px; border-radius: 10px; border: 1px solid #e6ecf2; background: #fff; color: #475569; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.2s; }
+    .wi-cancel:hover { background: #f7fafc; }
+    .wi-submit { padding: 10px 24px; border-radius: 10px; border: none; background: #0b5f8a; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 10px rgba(11, 95, 138, 0.25); }
+    .wi-submit:hover { background: #094d70; transform: translateY(-1px); }
+
+    @media (max-width: 640px) {
+        .wi-row { grid-template-columns: 1fr; }
+        .wi-actions { flex-direction: row; }
+    }
+</style>
+
 @push('scripts')
 <script>
 function previewImage(e) {

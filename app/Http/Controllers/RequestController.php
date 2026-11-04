@@ -23,8 +23,18 @@ class RequestController extends Controller
     public function create(Request $request)
     {
         $services = Service::all();
-        $serviceId = $request->query('service_id');
-        return view('requests.create', compact('services', 'serviceId'));
+
+        // IDs arrive encrypted in the URL; decrypt defensively (falls back to null on tampered/invalid input)
+        $serviceId = null;
+        $technicianId = null;
+        if ($request->query('service_id')) {
+            try { $serviceId = EncryptionHelper::decryptId($request->query('service_id')); } catch (\Exception $e) { $serviceId = null; }
+        }
+        if ($request->query('technician_id')) {
+            try { $technicianId = EncryptionHelper::decryptId($request->query('technician_id')); } catch (\Exception $e) { $technicianId = null; }
+        }
+
+        return view('requests.create', compact('services', 'serviceId', 'technicianId'));
     }
 
     /**
@@ -37,7 +47,7 @@ class RequestController extends Controller
             'address' => 'required|string|max:255',
             'scheduled_at' => 'nullable|date|after:now',
             'description' => 'nullable|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:4096'
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096'
         ]);
 
         // Create request
@@ -50,12 +60,18 @@ class RequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // Save images using Spatie Media Library
+        // Save images using Spatie Media Library (non-fatal: never blocks sending the request)
+        $imageError = null;
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $requestData
-                    ->addMedia($image)
-                    ->toMediaCollection('requests');
+            try {
+                foreach ($request->file('images') as $image) {
+                    $requestData
+                        ->addMedia($image)
+                        ->toMediaCollection('requests');
+                }
+            } catch (\Exception $e) {
+                $imageError = $e->getMessage();
+                \Illuminate\Support\Facades\Log::warning('Request images upload failed: ' . $e->getMessage());
             }
         }
 
@@ -77,6 +93,10 @@ class RequestController extends Controller
             
         foreach ($technicians as $technician) {
             $technician->user->notify(new TechnicianNewRequestAvailable($requestData));
+        }
+
+        if ($imageError) {
+            return redirect()->route('dashboard')->with('success', 'تم إرسال طلبك بنجاح! لكن تعذّر رفع الصور: ' . $imageError);
         }
 
         return redirect()->route('dashboard')->with('success', 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
@@ -352,10 +372,29 @@ class RequestController extends Controller
         // Notify the technician that their proposal was accepted
         $proposal->technician->user->notify(new TechnicianProposalAccepted($proposal));
 
+        // Persist the accepted offer's pricing onto the request so the cost
+        // summary, invoice and total reflect the real accepted price.
+        $proposal->loadMissing('items');
         $request->update([
             'assigned_technician_id' => $proposal->technician_id,
             'status' => 'in_progress',
+            'proposed_price' => $proposal->proposed_price,
+            'price_notes' => $proposal->price_notes,
+            'price_status' => 'accepted',
         ]);
+
+        // Mirror the proposal's warehouse items onto the request items so the
+        // parts subtotal is available directly from the request as well.
+        if ($proposal->items && $proposal->items->count() > 0 && $request->requestItems()->count() === 0) {
+            foreach ($proposal->items as $pi) {
+                $request->requestItems()->create([
+                    'warehouse_item_id' => $pi->warehouse_item_id,
+                    'quantity' => $pi->quantity,
+                    'unit_price' => $pi->unit_price,
+                    'total_price' => $pi->total_price,
+                ]);
+            }
+        }
 
         return back()->with('success', 'تم قبول العرض بنجاح!');
     }
@@ -375,8 +414,9 @@ class RequestController extends Controller
         return back()->with('success', 'تم رفض العرض');
     }
 
-    public function submitReview(Request $validateRequest, $id)
+    public function submitReview(Request $validateRequest, $encryptedId)
     {
+        $id = EncryptionHelper::decryptId($encryptedId);
         $request = RequestModel::findOrFail($id);
 
         if ($request->user_id !== Auth::id()) {

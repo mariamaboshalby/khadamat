@@ -106,10 +106,16 @@ class TechnicianController extends AdminController
                 'address' => $validated['address'] ?? null,
             ]);
 
-            // Upload photo via Spatie MediaLibrary
+            // Upload photo via Spatie MediaLibrary (non-fatal: never blocks saving the technician)
+            $photoError = null;
             if ($request->hasFile('photo')) {
-                $technician->addMediaFromRequest('photo')
-                    ->toMediaCollection('avatar');
+                try {
+                    $technician->addMediaFromRequest('photo')
+                        ->toMediaCollection('avatar');
+                } catch (\Exception $mediaEx) {
+                    $photoError = $mediaEx->getMessage();
+                    \Illuminate\Support\Facades\Log::warning('Technician avatar upload failed (store): ' . $mediaEx->getMessage());
+                }
             }
 
             // Add badges
@@ -127,12 +133,18 @@ class TechnicianController extends AdminController
                 $admin->notify(new AdminNewTechnicianSelected($technician));
             }
 
+            if ($photoError) {
+                return redirect()->route('admin.techs.index')
+                    ->with('success', 'تم إضافة الفني بنجاح، لكن تعذّر رفع الصورة: ' . $photoError);
+            }
+
             return redirect()->route('admin.techs.index')
                 ->with('success', 'تم إضافة الفني بنجاح');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withInput()->with('error', 'حدث خطأ أثناء إضافة الفني');
+            \Illuminate\Support\Facades\Log::error('Technician store failed: ' . $e->getMessage(), ['exception' => $e]);
+            return back()->withInput()->with('error', 'تعذّر إضافة الفني: ' . $e->getMessage());
         }
     }
 
@@ -231,11 +243,17 @@ class TechnicianController extends AdminController
                 'address' => $validated['address'] ?? null,
             ]);
 
-            // Handle photo via Spatie MediaLibrary
+            // Handle photo via Spatie MediaLibrary (non-fatal: never blocks saving the technician)
+            $photoError = null;
             if ($request->hasFile('photo')) {
-                // addMediaFromRequest with singleFile() automatically removes the old one
-                $technician->addMediaFromRequest('photo')
-                    ->toMediaCollection('avatar');
+                try {
+                    // addMediaFromRequest with singleFile() automatically removes the old one
+                    $technician->addMediaFromRequest('photo')
+                        ->toMediaCollection('avatar');
+                } catch (\Exception $mediaEx) {
+                    $photoError = $mediaEx->getMessage();
+                    \Illuminate\Support\Facades\Log::warning('Technician avatar upload failed (update): ' . $mediaEx->getMessage());
+                }
             } elseif ($request->boolean('remove_photo')) {
                 $technician->clearMediaCollection('avatar');
             }
@@ -250,12 +268,18 @@ class TechnicianController extends AdminController
 
             DB::commit();
 
+            if ($photoError) {
+                return redirect()->route('admin.techs.index')
+                    ->with('success', 'تم تحديث بيانات الفني بنجاح، لكن تعذّر رفع الصورة: ' . $photoError);
+            }
+
             return redirect()->route('admin.techs.index')
                 ->with('success', 'تم تحديث بيانات الفني بنجاح');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withInput()->with('error', 'حدث خطأ أثناء تحديث بيانات الفني');
+            \Illuminate\Support\Facades\Log::error('Technician update failed: ' . $e->getMessage(), ['exception' => $e]);
+            return back()->withInput()->with('error', 'تعذّر تحديث بيانات الفني: ' . $e->getMessage());
         }
     }
 
